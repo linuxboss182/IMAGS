@@ -30,7 +30,7 @@ export class InitialScreen extends Component
         const navAction = NavigationActions.reset({
             index: 0,
             actions: [
-                NavigationActions.navigate({ routeName: 'player'})
+                NavigationActions.navigate({ routeName: 'main'})
             ]
         });
         this.props.navigation.dispatch(navAction);
@@ -43,7 +43,7 @@ export class InitialScreen extends Component
         {
             // initialize spotify
             var spotifyOptions = {
-                "clientID":"<INSERT-YOUR-CLIENT-ID-HERE>",
+                "clientID":"8d1411f9635841aeb9b2523482ea5b1a",
                 "sessionUserDefaultsKey":"SpotifySession",
                 "redirectURL":"examplespotifyapp://auth",
                 "scopes":["user-read-private", "playlist-read", "playlist-read-private", "streaming"],
@@ -77,8 +77,10 @@ export class InitialScreen extends Component
 
     spotifyLoginButtonWasPressed()
     {
+
         // log into Spotify
         Spotify.login().then((loggedIn) => {
+
             if(loggedIn)
             {
                 // logged in
