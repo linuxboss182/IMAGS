@@ -29,6 +29,9 @@ allprojects {
             url "$rootDir/../node_modules/react-native/android"
         }
         google()
+        flatDir {
+            dirs project(':rn-spotify-sdk').file('libs'), 'libs'
+        }
     }
 }
 

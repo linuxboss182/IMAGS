@@ -51,6 +51,8 @@
 		CC100431D83E483A8FE23CD2 /* rubicon-icon-font.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 8333D30B88184E228CB6A878 /* rubicon-icon-font.ttf */; };
 		31B4F4BDD1D94F9EA25391AD /* SimpleLineIcons.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 7A73310F06AE41AE82E903E4 /* SimpleLineIcons.ttf */; };
 		9314108DEC254873B942A03D /* Zocial.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 691B560EE50048CB8B380B65 /* Zocial.ttf */; };
+		DD8E407FD73B4678AB2B888E /* libRNSpotify.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 4C6BB9F49BE74330A6737975 /* libRNSpotify.a */; };
+		73F1229F87C947B09FFBAC99 /* libRNEventEmitter.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 94827EAD85C34F3CAF3A2AC7 /* libRNEventEmitter.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -370,6 +372,10 @@
 		8333D30B88184E228CB6A878 /* rubicon-icon-font.ttf */ = {isa = PBXFileReference; name = "rubicon-icon-font.ttf"; path = "../node_modules/native-base/Fonts/rubicon-icon-font.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		7A73310F06AE41AE82E903E4 /* SimpleLineIcons.ttf */ = {isa = PBXFileReference; name = "SimpleLineIcons.ttf"; path = "../node_modules/native-base/Fonts/SimpleLineIcons.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
 		691B560EE50048CB8B380B65 /* Zocial.ttf */ = {isa = PBXFileReference; name = "Zocial.ttf"; path = "../node_modules/native-base/Fonts/Zocial.ttf"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = unknown; explicitFileType = undefined; includeInIndex = 0; };
+		B7FF1B135F5149A285425907 /* RNSpotify.xcodeproj */ = {isa = PBXFileReference; name = "RNSpotify.xcodeproj"; path = "../node_modules/rn-spotify-sdk/ios/RNSpotify.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		4C6BB9F49BE74330A6737975 /* libRNSpotify.a */ = {isa = PBXFileReference; name = "libRNSpotify.a"; path = "libRNSpotify.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
+		748B3EEBB634462DBDCF2D60 /* RNEventEmitter.xcodeproj */ = {isa = PBXFileReference; name = "RNEventEmitter.xcodeproj"; path = "../node_modules/react-native-events/ios/RNEventEmitter.xcodeproj"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = wrapper.pb-project; explicitFileType = undefined; includeInIndex = 0; };
+		94827EAD85C34F3CAF3A2AC7 /* libRNEventEmitter.a */ = {isa = PBXFileReference; name = "libRNEventEmitter.a"; path = "libRNEventEmitter.a"; sourceTree = "<group>"; fileEncoding = undefined; lastKnownFileType = archive.ar; explicitFileType = undefined; includeInIndex = 0; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -397,6 +403,8 @@
 				832341BD1AAA6AB300B99B32 /* libRCTText.a in Frameworks */,
 				00C302EA1ABCBA2D00DB3ED1 /* libRCTVibration.a in Frameworks */,
 				139FDEF61B0652A700C62182 /* libRCTWebSocket.a in Frameworks */,
+				DD8E407FD73B4678AB2B888E /* libRNSpotify.a in Frameworks */,
+				73F1229F87C947B09FFBAC99 /* libRNEventEmitter.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -583,6 +591,8 @@
 				832341B01AAA6A8300B99B32 /* RCTText.xcodeproj */,
 				00C302DF1ABCB9EE00DB3ED1 /* RCTVibration.xcodeproj */,
 				139FDEE61B06529A00C62182 /* RCTWebSocket.xcodeproj */,
+				B7FF1B135F5149A285425907 /* RNSpotify.xcodeproj */,
+				748B3EEBB634462DBDCF2D60 /* RNEventEmitter.xcodeproj */,
 			);
 			name = Libraries;
 			sourceTree = "<group>";
@@ -1245,6 +1255,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IMAGS.app/IMAGS";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Debug;
 		};
@@ -1263,6 +1283,16 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IMAGS.app/IMAGS";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Release;
 		};
@@ -1282,6 +1312,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = IMAGS;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Debug;
 		};
@@ -1300,6 +1335,11 @@
 				PRODUCT_BUNDLE_IDENTIFIER = "org.reactjs.native.example.$(PRODUCT_NAME:rfc1034identifier)";
 				PRODUCT_NAME = IMAGS;
 				VERSIONING_SYSTEM = "apple-generic";
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Release;
 		};
@@ -1326,6 +1366,16 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Debug;
 		};
@@ -1352,6 +1402,16 @@
 				SDKROOT = appletvos;
 				TARGETED_DEVICE_FAMILY = 3;
 				TVOS_DEPLOYMENT_TARGET = 9.2;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Release;
 		};
@@ -1377,6 +1437,16 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IMAGS-tvOS.app/IMAGS-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Debug;
 		};
@@ -1402,6 +1472,16 @@
 				SDKROOT = appletvos;
 				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/IMAGS-tvOS.app/IMAGS-tvOS";
 				TVOS_DEPLOYMENT_TARGET = 10.1;
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+					"\"$(SRCROOT)/$(TARGET_NAME)\"",
+				);
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(SRCROOT)/../node_modules/rn-spotify-sdk/ios/**",
+					"$(SRCROOT)/../node_modules/react-native-events/ios",
+				);
 			};
 			name = Release;
 		};
