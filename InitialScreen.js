@@ -45,7 +45,7 @@ export class InitialScreen extends Component
             var spotifyOptions = {
                 "clientID":"8d1411f9635841aeb9b2523482ea5b1a",
                 "sessionUserDefaultsKey":"SpotifySession",
-                "redirectURL":"examplespotifyapp://auth",
+                "redirectURL":"http://localhost:8888/callback/",
                 "scopes":["user-read-private", "playlist-read", "playlist-read-private", "streaming"],
             };
             Spotify.initialize(spotifyOptions).then((loggedIn) => {
