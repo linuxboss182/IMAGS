@@ -1,31 +1,31 @@
-/**
- * Created by jtgaulin on 9/24/18.
- */
 import React, { Component } from 'react';
-import {
-    Platform,
-    ActivityIndicator,
-    Alert,
-    StyleSheet,
-    Text,
-    TouchableHighlight,
-    View
-} from 'react-native';
+import { Slider } from 'react-native-elements'
+import { AppRegistry, StyleSheet, View, Text } from "react-native";
 
-const instructions = Platform.select({
-    ios: 'Press Cmd+R to reload,\n' + 'Cmd+D or shake for dev menu',
-    android:
-    'Double tap R on your keyboard to reload,\n' +
-    'Shake or press menu button for dev menu',
-});
+export class MainScreen extends Component {
+    state = {
+        value: 5,
+        pain: 5
+    };
 
-export class MainScreen extends Component
-{    render() {
+    render() {
         return (
             <View style={styles.container}>
-                <Text style={styles.welcome}>HELLO WORLD!</Text>
-                <Text style={styles.instructions}>To get started, edit App.js</Text>
-                <Text style={styles.instructions}>{instructions}</Text>
+                <Slider
+                    value={this.state.value}
+                    onValueChange={(value) => {
+                        this.setState({value});
+                        this.state.pain = 10-value;
+                    }}
+                    minimumValue={0}
+                    maximumValue={10}
+                    orientation="vertical"
+                    maximumTrackTintColor='#d14ba6'
+                    trackStyle={styles.track}
+                    thumbStyle={styles.thumb}
+                    />
+                <Text>Value: {this.state.value}</Text>
+                <Text>Pain: {this.state.pain}</Text>
             </View>
         );
     }
@@ -34,18 +34,28 @@ export class MainScreen extends Component
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        marginLeft: 10,
+        marginRight: 10,
+        alignItems: "stretch",
+        justifyContent: "center"
     },
-    welcome: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
+    track: {
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 1},
+        shadowRadius: 1,
+        shadowOpacity: 0.15,
     },
-    instructions: {
-        textAlign: 'center',
-        color: '#333333',
-        marginBottom: 5,
-    },
+    thumb: {
+        width: 30,
+        height: 30,
+        borderRadius: 1,
+        backgroundColor: '#f8c347',
+        borderColor: '#a4126e',
+        borderWidth: 5,
+        borderRadius: 10,
+        shadowColor: 'black',
+        shadowOffset: {width: 0, height: 2},
+        shadowRadius: 2,
+        shadowOpacity: 0.35
+    }
 });

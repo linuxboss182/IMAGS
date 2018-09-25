@@ -141,6 +141,7 @@ android {
 }
 
 dependencies {
+    compile project(':react-native-vector-icons')
     compile project(':react-native-events')
     compile project(':rn-spotify-sdk')
     implementation fileTree(dir: "libs", include: ["*.jar"])
