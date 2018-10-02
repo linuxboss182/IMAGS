@@ -20,7 +20,8 @@ export class MainScreen extends Component {
                     minimumValue={0}
                     maximumValue={10}
                     orientation="vertical"
-                    maximumTrackTintColor='#d14ba6'
+                    minimumTrackTintColor='#0E95FF'
+                    maximumTrackTintColor='#0DC1E8'
                     trackStyle={styles.track}
                     thumbStyle={styles.thumb}
                     />
@@ -40,7 +41,7 @@ const styles = StyleSheet.create({
         justifyContent: "center"
     },
     track: {
-        shadowColor: 'black',
+        shadowColor: '#0EFF60',
         shadowOffset: {width: 0, height: 1},
         shadowRadius: 1,
         shadowOpacity: 0.15,
@@ -49,12 +50,12 @@ const styles = StyleSheet.create({
         width: 30,
         height: 30,
         borderRadius: 1,
-        backgroundColor: '#f8c347',
-        borderColor: '#a4126e',
+        backgroundColor: '#0DE895',
+        borderColor: '#0DC1E8',
         borderWidth: 5,
         borderRadius: 10,
-        shadowColor: 'black',
-        shadowOffset: {width: 0, height: 2},
+        shadowColor: '#0EFF60',
+        shadowOffset: {width: 1, height: 2},
         shadowRadius: 2,
         shadowOpacity: 0.35
     }

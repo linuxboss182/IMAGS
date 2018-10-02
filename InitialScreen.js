@@ -10,7 +10,7 @@ import {
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
-
+import { Container, Header, Content, Item, Input } from 'native-base';
 export class InitialScreen extends Component
 {
     static navigationOptions = {
@@ -115,8 +115,13 @@ export class InitialScreen extends Component
             return (
                 <View style={styles.container}>
                     <Text style={styles.greeting}>
-                        Hey! You! Log into your spotify
+                        Welcome to IMAGS!
                     </Text>
+                    <Content>
+                        <Item rounded>
+                            <Input placeholder='Rounded Textbox'/>
+                        </Item>
+                    </Content>
                     <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
                         <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
                     </TouchableHighlight>
