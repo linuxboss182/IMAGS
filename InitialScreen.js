@@ -10,8 +10,20 @@ import {
 } from 'react-native';
 import { StackActions, NavigationActions } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
-import { Container, Header, Content, Item, Input } from 'native-base';
-export class InitialScreen extends Component
+import {
+    Container,
+    Header,
+    Title,
+    Content,
+    Button,
+    Icon,
+    Body,
+    Left,
+    Right,
+    Input,
+    Item,
+    Form
+} from "native-base";export class InitialScreen extends Component
 {
     static navigationOptions = {
         header: null
@@ -114,14 +126,33 @@ export class InitialScreen extends Component
         {
             return (
                 <View style={styles.container}>
-                    <Text style={styles.greeting}>
-                        Welcome to IMAGS!
-                    </Text>
-                    <Content>
-                        <Item rounded>
-                            <Input placeholder='Rounded Textbox'/>
-                        </Item>
-                    </Content>
+                    <Container style={styles.textBoxes}>
+                        <Header>
+                            <Body>
+                            <Title>IMAGS</Title>
+                            </Body>
+                            <Right />
+                        </Header>
+
+                        <Content padder>
+                            <Form>
+                                <Item regular>
+                                    <Input placeholder="Name" />
+                                </Item>
+                            </Form>
+                            <Form>
+                                <Item regular>
+                                    <Input placeholder="Date of Birth" />
+                                </Item>
+                            </Form>
+                            <Form>
+                                <Item regular>
+                                    <Input placeholder="Participant ID" />
+                                </Item>
+                            </Form>
+                        </Content>
+                    </Container>
+
                     <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
                         <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
                     </TouchableHighlight>
@@ -136,9 +167,12 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        backgroundColor: '#F5FCFF',
+        backgroundColor: '#f0f1ff',
     },
-
+    textBoxes:{
+        backgroundColor: "#F0F1FF",
+        width: 350,
+    },
     loadIndicator: {
         //
     },

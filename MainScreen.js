@@ -25,7 +25,6 @@ export class MainScreen extends Component {
                     trackStyle={styles.track}
                     thumbStyle={styles.thumb}
                     />
-                <Text>Value: {this.state.value}</Text>
                 <Text>Pain: {this.state.pain}</Text>
             </View>
         );
