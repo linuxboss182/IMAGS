@@ -23,7 +23,9 @@ import {
     Input,
     Item,
     Form
-} from "native-base";export class InitialScreen extends Component
+} from "native-base";
+
+export class InitialScreen extends Component
 {
     static navigationOptions = {
         header: null
@@ -126,36 +128,37 @@ import {
         {
             return (
                 <View style={styles.container}>
-                    <Container style={styles.textBoxes}>
-                        <Header>
-                            <Body>
-                            <Title>IMAGS</Title>
-                            </Body>
-                            <Right />
-                        </Header>
+                    <Header>
+                        <Body>
+                        <Title>IMAGS</Title>
+                        </Body>
+                        <Right />
+                    </Header>
 
-                        <Content padder>
-                            <Form>
+                    <Container style={styles.mid}>
+                        <Content padder >
+                            <Form style={styles.textboxes}>
                                 <Item regular>
                                     <Input placeholder="Name" />
                                 </Item>
                             </Form>
-                            <Form>
+                            <Form style={styles.textboxes}>
                                 <Item regular>
                                     <Input placeholder="Date of Birth" />
                                 </Item>
                             </Form>
-                            <Form>
+                            <Form style={styles.textboxes}>
                                 <Item regular>
                                     <Input placeholder="Participant ID" />
                                 </Item>
                             </Form>
                         </Content>
                     </Container>
-
+                    <Container style={styles.bottom}>
                     <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
                         <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
                     </TouchableHighlight>
+                    </Container>
                 </View>
             );
         }
@@ -164,26 +167,30 @@ import {
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'rgb(4,4,4)',
+        // justifyContent: 'center',
         flex: 1,
-        justifyContent: 'center',
-        alignItems: 'center',
-        backgroundColor: '#f0f1ff',
+        // flexDirection: 'column',
     },
-    textBoxes:{
-        backgroundColor: "#F0F1FF",
-        width: 350,
+    mid:{
+        marginTop: 150,
+        backgroundColor: 'rgb(4,4,4)',
+        alignItems: 'stretch',
     },
-    loadIndicator: {
-        //
+    bottom:{
+        backgroundColor: 'rgb(4,4,4)',
+        alignItems: 'flex-end',
+    },
+    textboxes:{
+        marginBottom: 20,
+        backgroundColor: 'rgba(50, 50, 50, 0.70)',
     },
     loadMessage: {
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
     },
-
     spotifyLoginButton: {
-        justifyContent: 'center',
         borderRadius: 18,
         backgroundColor: 'green',
         overflow: 'hidden',
@@ -195,11 +202,5 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         color: 'white',
-    },
-
-    greeting: {
-        fontSize: 20,
-        textAlign: 'center',
-        margin: 10,
-    },
+    }
 });
