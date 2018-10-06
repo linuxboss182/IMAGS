@@ -1,61 +1,132 @@
 import React, { Component } from 'react';
-import { Slider } from 'react-native-elements'
-import { AppRegistry, StyleSheet, View, Text } from "react-native";
+import {
+    StyleSheet,
+    View,
+    Text,
+    TouchableHighlight
+} from "react-native";
+import Spotify from 'rn-spotify-sdk';
+import { StackActions, NavigationActions } from 'react-navigation';
+
+import Header from './comps/header.js';
+import Art from './comps/art.js';
+import Control from './comps/control.js';
+import Track from './comps/track.js';
+import PainSlider from './comps/slider.js';
 
 export class MainScreen extends Component {
     state = {
-        value: 5,
-        pain: 5
+        pain: 5,
+        spotifyUserName: null,
+        track: {
+            id: "3FCto7hnn1shUyZL42YgfO",
+            album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
+            name: "Piano Man",
+            artists: [{name: "Billy Joel"}]
+        }
     };
+
+    // static navigationOptions = {
+    //     title: 'Player',
+    // };
+
+    constructor()
+    {
+        super();
+
+        this.spotifyLogoutButtonWasPressed = this.spotifyLogoutButtonWasPressed.bind(this);
+        this.searchSong = this.searchSong.bind(this);
+    }
+
+    componentDidMount()
+    {
+        // Use this to update values on backend
+        // Spotify.addListener('metadataChange', (meta) => {
+        //         console.log("Meta change: " + meta);
+        //     }
+        // );
+
+        //Send api request to get user info
+        Spotify.getMe().then((result) => {
+            // update state with user info
+            this.setState({ spotifyUserName: result.display_name });
+            // play song
+            return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0);
+        }).then((ret) => {
+            console.log("ret: " + ret);
+            // success
+        }).catch((error) => {
+            // error
+            Alert.alert("Error", error.message);
+        });
+
+    }
+
+    goToInitialScreen()
+    {
+        const navAction = StackActions.reset({
+            index: 0,
+            actions: [
+                NavigationActions.navigate({ routeName: 'initial'})
+            ]
+        });
+        this.props.navigation.dispatch(navAction);
+    }
+
+    spotifyLogoutButtonWasPressed()
+    {
+        Spotify.logout().finally(() => {
+            this.goToInitialScreen();
+        });
+    }
+
+    searchSong(event){
+
+        Spotify.search(event.nativeEvent.text, ['album','artist','playlist','track']).then((ret) => {
+            // success
+            this.setState({track: ret.tracks.items[0]}); //Most relevant song
+            return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0); //Play the song
+        }).catch((error) => {
+            // error
+            console.log("Error: "+ error);
+        });
+    }
 
     render() {
         return (
-            <View style={styles.container}>
-                <Slider
-                    value={this.state.value}
-                    onValueChange={(value) => {
-                        this.setState({value});
-                        this.state.pain = 10-value;
-                    }}
-                    minimumValue={0}
-                    maximumValue={10}
-                    orientation="vertical"
-                    minimumTrackTintColor='#0E95FF'
-                    maximumTrackTintColor='#0DC1E8'
-                    trackStyle={styles.track}
-                    thumbStyle={styles.thumb}
-                    />
-                <Text>Pain: {this.state.pain}</Text>
-            </View>
+        <View style={styles.container}>
+            <Header onLogoutPress={this.spotifyLogoutButtonWasPressed}
+                    onSearch={this.searchSong}/>
+
+            <Art url={this.state.track.album.images[0].url} />
+
+            <Track title={this.state.track.name}
+                   artist={this.state.track.artists[0].name} />
+
+            <Control />
+
+            <PainSlider pain={this.state.pain}
+                        onValueChange={(pain) => {this.setState({pain});}} />
+
+            {/*<Text style={styles.text}>Pain: {this.state.pain}</Text>*/}
+
+        </View>
         );
     }
 }
 
 const styles = StyleSheet.create({
     container: {
+        backgroundColor: 'rgb(4,4,4)',
         flex: 1,
-        marginLeft: 10,
-        marginRight: 10,
-        alignItems: "stretch",
-        justifyContent: "center"
+        flexDirection: 'column',
+        textAlign: 'center',
+        color: 'rgba(255, 255, 255, 0.72)',
+        fontWeight: 'bold',
+        fontSize: 10
     },
-    track: {
-        shadowColor: '#0EFF60',
-        shadowOffset: {width: 0, height: 1},
-        shadowRadius: 1,
-        shadowOpacity: 0.15,
-    },
-    thumb: {
-        width: 30,
-        height: 30,
-        borderRadius: 1,
-        backgroundColor: '#0DE895',
-        borderColor: '#0DC1E8',
-        borderWidth: 5,
-        borderRadius: 10,
-        shadowColor: '#0EFF60',
-        shadowOffset: {width: 1, height: 2},
-        shadowRadius: 2,
-        shadowOpacity: 0.35
+    text: {
+        color: 'rgba(255, 255, 255, 0.72)',
+        fontWeight: 'bold',
     }
 });
