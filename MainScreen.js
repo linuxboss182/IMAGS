@@ -95,15 +95,15 @@ export class MainScreen extends Component {
     render() {
         return (
         <View style={styles.container}>
-            {/*<Header onLogoutPress={this.spotifyLogoutButtonWasPressed}*/}
-                    {/*onSearch={this.searchSong}/>*/}
+            <Header onLogoutPress={this.spotifyLogoutButtonWasPressed}
+                    onSearch={this.searchSong}/>
 
-            {/*<Art url={this.state.track.album.images[0].url} />*/}
+            <Art url={this.state.track.album.images[0].url} />
 
-            {/*<Track title={this.state.track.name}*/}
-                   {/*artist={this.state.track.artists[0].name} />*/}
+            <Track title={this.state.track.name}
+                   artist={this.state.track.artists[0].name} />
 
-            {/*<Control />*/}
+            <Control />
 
             <PainSlider pain={this.state.pain}
                         onValueChange={(pain) => {this.setState({pain});}} />
