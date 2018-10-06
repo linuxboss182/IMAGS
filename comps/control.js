@@ -16,7 +16,6 @@ const Control = ({
     paused,
     shuffleOn,
     repeatOn,
-    onPressPlay,
     onPressPause,
     onBack,
     onForward,
@@ -40,7 +39,7 @@ const Control = ({
                     <Image source={require('../img/baseline_pause_white_18dp.png')}/>
                 </View>
             </TouchableOpacity> :
-            <TouchableOpacity onPress={onPressPlay}>
+            <TouchableOpacity onPress={onPressPause}>
                 <View style={styles.playButton}>
                     <Image source={require('../img/baseline_play_arrow_white_18dp.png')}/>
                 </View>

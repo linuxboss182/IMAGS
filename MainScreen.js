@@ -18,6 +18,7 @@ export class MainScreen extends Component {
     state = {
         pain: 5,
         spotifyUserName: null,
+        paused: false,
         track: {
             id: "3FCto7hnn1shUyZL42YgfO",
             album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -36,6 +37,7 @@ export class MainScreen extends Component {
 
         this.spotifyLogoutButtonWasPressed = this.spotifyLogoutButtonWasPressed.bind(this);
         this.searchSong = this.searchSong.bind(this);
+        this.onPressPause = this.onPressPause.bind(this);
     }
 
     componentDidMount()
@@ -92,6 +94,11 @@ export class MainScreen extends Component {
         });
     }
 
+    onPressPause(){
+        this.setState({paused: !this.state.paused});
+        Spotify.setPlaying(this.state.paused);
+    }
+
     render() {
         return (
         <View style={styles.container}>
@@ -103,7 +110,8 @@ export class MainScreen extends Component {
             <Track title={this.state.track.name}
                    artist={this.state.track.artists[0].name} />
 
-            <Control />
+            <Control paused={this.state.paused}
+                     onPressPause={this.onPressPause}/>
 
             <PainSlider pain={this.state.pain}
                         onValueChange={(pain) => {this.setState({pain});}} />
