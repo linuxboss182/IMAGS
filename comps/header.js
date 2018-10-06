@@ -23,7 +23,7 @@ const Header = ({
     <View style={styles.container}>
         <TouchableOpacity onPress={onDownPress}>
             <Image style={styles.button}
-                   source={require('../img/baseline_keyboard_arrow_down_white_18dp.png')} />
+                   source={require('../img/ic_keyboard_arrow_down_white.png')} />
         </TouchableOpacity>
 
         <TouchableHighlight onPress={onLogoutPress}>
@@ -42,7 +42,7 @@ const Header = ({
 
         <TouchableOpacity onPress={onQueuePress}>
             <Image style={styles.button}
-                   source={require('../img/baseline_queue_music_white_18dp.png')} />
+                   source={require('../img/ic_queue_music_white.png')} />
         </TouchableOpacity>
     </View>
 );

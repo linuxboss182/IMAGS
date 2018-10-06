@@ -25,7 +25,7 @@ const Track = ({
     <View style={styles.container}>
         <TouchableOpacity onPress={onAddPress}>
             <Image style={styles.button}
-                   source={require('../img/baseline_add_circle_white_18dp.png')} />
+                   source={require('../img/ic_add_circle_outline_white.png')} />
         </TouchableOpacity>
         <View style={styles.detailsWrapper}>
             <Text style={styles.title} onPress={onTitlePress}>{title}</Text>
@@ -34,7 +34,7 @@ const Track = ({
         <TouchableOpacity onPress={onMorePress}>
             <View style={styles.moreButton}>
                 <Image style={styles.moreButtonIcon}
-                       source={require('../img/baseline_more_horiz_white_18dp.png')} />
+                       source={require('../img/ic_more_horiz_white.png')} />
             </View>
         </TouchableOpacity>
     </View>
