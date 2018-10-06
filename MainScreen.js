@@ -18,7 +18,9 @@ export class MainScreen extends Component {
     state = {
         pain: 5,
         spotifyUserName: null,
-        paused: false,
+        playing: false,
+        shuffling: false,
+        repeating: false,
         track: {
             id: "3FCto7hnn1shUyZL42YgfO",
             album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -27,10 +29,6 @@ export class MainScreen extends Component {
         }
     };
 
-    // static navigationOptions = {
-    //     title: 'Player',
-    // };
-
     constructor()
     {
         super();
@@ -38,15 +36,23 @@ export class MainScreen extends Component {
         this.spotifyLogoutButtonWasPressed = this.spotifyLogoutButtonWasPressed.bind(this);
         this.searchSong = this.searchSong.bind(this);
         this.onPressPause = this.onPressPause.bind(this);
+        this.metaEventHandler = this.metaEventHandler.bind(this);
+    }
+
+    metaEventHandler(event){
+        this.setState({playing: event.state.playing,
+            shuffling: event.state.shuffling,
+            repeating: event.state.repeating});
     }
 
     componentDidMount()
     {
-        // Use this to update values on backend
-        // Spotify.addListener('metadataChange', (meta) => {
-        //         console.log("Meta change: " + meta);
-        //     }
-        // );
+        //Listeners for spotify events
+        Spotify.addListener('metadataChange', this.metaEventHandler);
+        Spotify.addListener('play', this.metaEventHandler);
+        Spotify.addListener('pause', this.metaEventHandler);
+        Spotify.addListener('shuffleStatusChange', this.metaEventHandler);
+        Spotify.addListener('repeatStatusChange', this.metaEventHandler);
 
         //Send api request to get user info
         Spotify.getMe().then((result) => {
@@ -55,7 +61,6 @@ export class MainScreen extends Component {
             // play song
             return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0);
         }).then((ret) => {
-            console.log("ret: " + ret);
             // success
         }).catch((error) => {
             // error
@@ -83,7 +88,6 @@ export class MainScreen extends Component {
     }
 
     searchSong(event){
-
         Spotify.search(event.nativeEvent.text, ['album','artist','playlist','track']).then((ret) => {
             // success
             this.setState({track: ret.tracks.items[0]}); //Most relevant song
@@ -95,8 +99,6 @@ export class MainScreen extends Component {
     }
 
     onPressPause(){
-        this.setState({paused: !this.state.paused});
-        Spotify.setPlaying(this.state.paused);
     }
 
     render() {
@@ -110,8 +112,15 @@ export class MainScreen extends Component {
             <Track title={this.state.track.name}
                    artist={this.state.track.artists[0].name} />
 
-            <Control paused={this.state.paused}
-                     onPressPause={this.onPressPause}/>
+            <Control paused={!this.state.playing}
+                     shuffleOn={this.state.shuffling}
+                     repeatOn={this.state.repeating}
+                     onForward={()=> Spotify.skipToNext()}
+                     onBack={()=> Spotify.skipToPrevious()}
+                     setShuffling={() => Spotify.setShuffling(!this.state.shuffling)}
+                     onPressRepeat={() => Spotify.setPlaying(!this.state.repeating)}
+                     onPressPause={() => Spotify.setPlaying(!this.state.playing)}
+            />
 
             <PainSlider pain={this.state.pain}
                         onValueChange={(pain) => {this.setState({pain});}} />
