@@ -18,5 +18,5 @@ export default App = StackNavigator({
     initial: { screen:InitialScreen },
     main: { screen:MainScreen },
 },{
-    headerMode: 'screen',
+    headerMode: 'none',
 });
