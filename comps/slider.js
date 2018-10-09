@@ -20,7 +20,7 @@ const PainSlider = ({
     <View style={styles.container}>
         <TouchableOpacity>
             <Image style={styles.button}
-                   source={require('../img/sad-50.png')} />
+                   source={require('../img/happy-50-white.png')} />
         </TouchableOpacity>
 
         <View style={styles.sliderbox}>
@@ -38,7 +38,7 @@ const PainSlider = ({
 
         <TouchableOpacity>
             <Image style={styles.button}
-                   source={require('../img/happy-50.png')} />
+                   source={require('../img/sad-50-white.png')} />
         </TouchableOpacity>
     </View>
 );
