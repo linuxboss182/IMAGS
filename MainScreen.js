@@ -13,6 +13,7 @@ import Art from './comps/art.js';
 import Control from './comps/control.js';
 import Track from './comps/track.js';
 import PainSlider from './comps/slider.js';
+import SessionControl from './comps/sessionControl.js';
 
 export class MainScreen extends Component {
     state = {
@@ -21,6 +22,10 @@ export class MainScreen extends Component {
         playing: false,
         shuffling: false,
         repeating: false,
+        initialSession: true,
+        beforeSession: false,
+        inSession: false,
+        afterSession: false,
         track: {
             id: "3FCto7hnn1shUyZL42YgfO",
             album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -35,8 +40,8 @@ export class MainScreen extends Component {
 
         this.spotifyLogoutButtonWasPressed = this.spotifyLogoutButtonWasPressed.bind(this);
         this.searchSong = this.searchSong.bind(this);
-        this.onPressPause = this.onPressPause.bind(this);
         this.metaEventHandler = this.metaEventHandler.bind(this);
+        this.onSliderChange = this.onSliderChange.bind(this);
     }
 
     metaEventHandler(event){
@@ -98,7 +103,11 @@ export class MainScreen extends Component {
         });
     }
 
-    onPressPause(){
+    onSliderChange(pain){
+        if(this.state.initialSession){
+            this.setState({initialSession: false, beforeSession: true})
+        }
+        this.setState({pain: pain})
     }
 
     render() {
@@ -122,8 +131,20 @@ export class MainScreen extends Component {
                      onPressPause={() => Spotify.setPlaying(!this.state.playing)}
             />
 
+            <SessionControl
+                            initialSession={this.state.initialSession}
+                            beforeSession={this.state.beforeSession}
+                            inSession={this.state.inSession}
+                            afterSession={this.state.afterSession}
+                            onBegin={()=> this.setState({beforeSession: false, inSession: true})}
+                            onEnd={()=> this.setState({inSession: false, afterSession: true})}
+                            onYes={()=> this.setState({afterSession: false, initialSession: false})}
+                            onNo={()=> this.setState({afterSession: false, initialSession: false})}
+                            onCancel={()=> this.setState({afterSession: false, inSession: true})}
+            />
+
             <PainSlider pain={this.state.pain}
-                        onValueChange={(pain) => {this.setState({pain});}} />
+                        onValueChange={this.onSliderChange} />
 
             {/*<Text style={styles.text}>Pain: {this.state.pain}</Text>*/}
 
