@@ -133,6 +133,7 @@ export class InitialScreen extends Component
                         <Title>IMAGS</Title>
                         </Body>
                         <Right />
+
                     </Header>
 
                     <Container style={styles.mid}>
