@@ -35,7 +35,7 @@ export class InitialScreen extends Component
     {
         super();
 
-        this.state = {spotifyInitialized: false};
+        this.state = {spotifyInitialized: false, loginSuccessful: false};
         this.spotifyLoginButtonWasPressed = this.spotifyLoginButtonWasPressed.bind(this);
     }
 
@@ -103,6 +103,8 @@ export class InitialScreen extends Component
             else
             {
                 // cancelled
+                this.setState({loginSuccessful: true});
+
             }
         }).catch((error) => {
             // error
@@ -112,6 +114,7 @@ export class InitialScreen extends Component
 
     render()
     {
+
         if(!this.state.spotifyInitialized)
         {
             return (
@@ -134,7 +137,15 @@ export class InitialScreen extends Component
                         </Body>
                         <Right />
                     </Header>
+                    {this.state.loginSuccessful ?
+                        <Text style={styles.text}>
+                            An error occurred. You may need Spotify Premium.
+                        </Text> :
+                        <Text style={styles.text}>
 
+                        </Text>
+
+                    }
                     <Container style={styles.mid}>
                         <Content padder >
                             <Form style={styles.textboxes}>
@@ -161,7 +172,7 @@ export class InitialScreen extends Component
                     </Container>
                 </View>
             );
-        }
+         }
     }
 }
 
@@ -189,6 +200,10 @@ const styles = StyleSheet.create({
         fontSize: 20,
         textAlign: 'center',
         margin: 10,
+    },
+    text: {
+        color: 'rgba(255, 255, 255, 0.72)',
+        fontWeight: 'bold',
     },
     spotifyLoginButton: {
         borderRadius: 18,
