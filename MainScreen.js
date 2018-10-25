@@ -15,9 +15,13 @@ import Track from './comps/track.js';
 import PainSlider from './comps/slider.js';
 import SessionControl from './comps/sessionControl.js';
 
+const PAIN_RECORD_THRESHOLD = .5;
+
 export class MainScreen extends Component {
+
     state = {
         pain: 5,
+        lastRecordedPain: -1,
         spotifyUserName: null,
         playing: false,
         shuffling: false,
@@ -26,6 +30,7 @@ export class MainScreen extends Component {
         beforeSession: false,
         inSession: false,
         afterSession: false,
+        events : [],
         track: {
             id: "3FCto7hnn1shUyZL42YgfO",
             album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -40,24 +45,48 @@ export class MainScreen extends Component {
 
         this.spotifyLogoutButtonWasPressed = this.spotifyLogoutButtonWasPressed.bind(this);
         this.searchSong = this.searchSong.bind(this);
-        this.metaEventHandler = this.metaEventHandler.bind(this);
+        this.songEventHandler = this.songEventHandler.bind(this);
+        this.painEventHandler = this.painEventHandler.bind(this);
         this.onSliderChange = this.onSliderChange.bind(this);
+        this.sessionStart = this.sessionStart.bind(this);
+        this.sessionEnd = this.sessionEnd.bind(this);
     }
 
-    metaEventHandler(event){
+    painEventHandler(pain, type){
+        //update last recorded pain
+        this.setState({lastRecordedPain:pain});
+
+        var newPainEvent = {eventType:type,date:new Date().getTime(),pain:pain}
+        var newEvents = this.state.events.concat(newPainEvent);
+        this.setState({events:newEvents});
+        console.log(this.state.events);
+    }
+
+    songEventHandler(event, type){
+        //if it is a playBackEvent
         this.setState({playing: event.state.playing,
             shuffling: event.state.shuffling,
             repeating: event.state.repeating});
+        //create new playbackEvent
+        var newPlaybackEvent = {eventType: type, date:new Date().getTime(),state: event.state, track: event.metadata.currentTrack};
+        //add to events
+        var newEvents = this.state.events.concat(newPlaybackEvent);
+        this.setState({events : newEvents});
+        console.log(this.state.events);
+    }
+
+    eventHandler(event, type){
+
     }
 
     componentDidMount()
     {
         //Listeners for spotify events
-        Spotify.addListener('metadataChange', this.metaEventHandler);
-        Spotify.addListener('play', this.metaEventHandler);
-        Spotify.addListener('pause', this.metaEventHandler);
-        Spotify.addListener('shuffleStatusChange', this.metaEventHandler);
-        Spotify.addListener('repeatStatusChange', this.metaEventHandler);
+        Spotify.addListener('metadataChange', (event)=>{ this.songEventHandler(event,'metadataChange')});
+        Spotify.addListener('play', (event)=>{ this.songEventHandler(event,'play')});
+        Spotify.addListener('pause', (event)=>{ this.songEventHandler(event,'pause')});
+        Spotify.addListener('shuffleStatusChange', (event)=>{ this.songEventHandler(event,'shuffleStatusChange')});
+        Spotify.addListener('repeatStatusChange', (event)=>{ this.songEventHandler(event,'repeatStatusChange')});
 
         //Send api request to get user info
         Spotify.getMe().then((result) => {
@@ -108,6 +137,26 @@ export class MainScreen extends Component {
             this.setState({initialSession: false, beforeSession: true})
         }
         this.setState({pain: pain})
+
+        //only record pain if in session
+        if(this.state.inSession) {
+            //if there is a significant difference between currect apin and last recorded pain, record pain
+            if (Math.abs(this.state.pain - this.state.lastRecordedPain) >= PAIN_RECORD_THRESHOLD) {
+                //record pain
+                this.painEventHandler(pain, 'painChange');
+            }
+        }
+    }
+
+    sessionStart(){
+        this.setState({beforeSession: false, inSession: true});
+        this.painEventHandler(this.state.pain,'sessionStart')
+    }
+
+    sessionEnd(){
+        this.setState({inSession: false, afterSession: true});
+        this.painEventHandler(this.state.pain,'sessionEnd');
+
     }
 
     render() {
@@ -132,12 +181,13 @@ export class MainScreen extends Component {
             />
 
             <SessionControl
+
                             initialSession={this.state.initialSession}
                             beforeSession={this.state.beforeSession}
                             inSession={this.state.inSession}
                             afterSession={this.state.afterSession}
-                            onBegin={()=> this.setState({beforeSession: false, inSession: true})}
-                            onEnd={()=> this.setState({inSession: false, afterSession: true})}
+                            onBegin= {this.sessionStart}
+                            onEnd={this.sessionEnd}
                             onYes={()=> this.setState({afterSession: false, initialSession: false})}
                             onNo={()=> this.setState({afterSession: false, initialSession: false})}
                             onCancel={()=> this.setState({afterSession: false, inSession: true})}
@@ -151,6 +201,8 @@ export class MainScreen extends Component {
         </View>
         );
     }
+
+
 }
 
 const styles = StyleSheet.create({
