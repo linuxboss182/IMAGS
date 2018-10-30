@@ -14,6 +14,7 @@ import Control from './comps/control.js';
 import Track from './comps/track.js';
 import PainSlider from './comps/slider.js';
 import SessionControl from './comps/sessionControl.js';
+import firebase from './comps/firebase.js';
 
 const PAIN_RECORD_THRESHOLD = .5;
 
@@ -73,10 +74,6 @@ export class MainScreen extends Component {
         var newEvents = this.state.events.concat(newPlaybackEvent);
         this.setState({events : newEvents});
         console.log(this.state.events);
-    }
-
-    eventHandler(event, type){
-
     }
 
     componentDidMount()
@@ -156,6 +153,16 @@ export class MainScreen extends Component {
     sessionEnd(){
         this.setState({inSession: false, afterSession: true});
         this.painEventHandler(this.state.pain,'sessionEnd');
+
+        const sessionsRef = firebase.database().ref('sessions');
+        const session = {
+            events: this.state.events
+        };
+        sessionsRef.push(session);
+
+        this.setState({
+            events: []
+        });
 
     }
 
