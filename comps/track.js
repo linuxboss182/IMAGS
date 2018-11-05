@@ -28,8 +28,11 @@ const Track = ({
                    source={require('../img/ic_add_circle_outline_white.png')} />
         </TouchableOpacity>
         <View style={styles.detailsWrapper}>
-            <Text style={styles.title} onPress={onTitlePress}>{title}</Text>
-            <Text style={styles.artist} onPress={onArtistPress}>{artist}</Text>
+            {title ?
+            [<Text key={1} style={styles.title} onPress={onTitlePress}>{title}</Text>,
+            <Text key={2} style={styles.artist} onPress={onArtistPress}>{artist}</Text>]
+                : null
+            }
         </View>
         <TouchableOpacity onPress={onMorePress}>
             <View style={styles.moreButton}>

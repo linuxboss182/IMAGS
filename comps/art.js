@@ -20,10 +20,16 @@ const AlbumArt = ({
 }) => (
     <View style={styles.container}>
         <TouchableOpacity onPress={onPress}>
+            {url ?
             <Image
                 style={styles.image}
                 source={{uri: url}}
+            /> :
+            <Image
+                style={styles.image}
+                source={require('../img/health.png')}
             />
+            }
         </TouchableOpacity>
     </View>
 );

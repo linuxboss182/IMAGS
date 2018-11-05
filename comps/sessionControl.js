@@ -50,6 +50,16 @@ const styles = StyleSheet.create({
         marginLeft: 20,
         marginRight: 20,
     },
+    textInit:{
+        flex: 1,
+        color: 'rgba(255, 255, 255, 0.72)',
+        fontWeight: 'bold',
+        fontSize: 24,
+        textAlign: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
     text: {
         flex: 1,
         color: 'rgba(255, 255, 255, 0.72)',

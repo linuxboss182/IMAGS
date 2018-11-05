@@ -31,13 +31,13 @@ export class MainScreen extends Component {
         beforeSession: false,
         inSession: false,
         afterSession: false,
-        events : [],
-        track: {
-            id: "3FCto7hnn1shUyZL42YgfO",
-            album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
-            name: "Piano Man",
-            artists: [{name: "Billy Joel"}]
-        }
+        events : []
+        // track: {
+        //     id: "3FCto7hnn1shUyZL42YgfO",
+        //     album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
+        //     name: "Piano Man",
+        //     artists: [{name: "Billy Joel"}]
+        // }
     };
 
     constructor()
@@ -54,26 +54,29 @@ export class MainScreen extends Component {
     }
 
     painEventHandler(pain, type){
-        //update last recorded pain
-        this.setState({lastRecordedPain:pain});
-
         var newPainEvent = {eventType:type,date:new Date().getTime(),pain:pain}
         var newEvents = this.state.events.concat(newPainEvent);
-        this.setState({events:newEvents});
-        console.log(this.state.events);
+
+        //Update state
+        this.setState({
+            events: newEvents,
+            lastRecordedPain: pain
+        });
     }
 
     songEventHandler(event, type){
-        //if it is a playBackEvent
-        this.setState({playing: event.state.playing,
-            shuffling: event.state.shuffling,
-            repeating: event.state.repeating});
         //create new playbackEvent
         var newPlaybackEvent = {eventType: type, date:new Date().getTime(),state: event.state, track: event.metadata.currentTrack};
         //add to events
         var newEvents = this.state.events.concat(newPlaybackEvent);
-        this.setState({events : newEvents});
-        console.log(this.state.events);
+
+        //Update state
+        this.setState({
+            playing: event.state.playing,
+            shuffling: event.state.shuffling,
+            repeating: event.state.repeating,
+            events: newEvents
+        });
     }
 
     componentDidMount()
@@ -90,14 +93,13 @@ export class MainScreen extends Component {
             // update state with user info
             this.setState({ spotifyUserName: result.display_name });
             // play song
-            return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0);
+            // return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0);
         }).then((ret) => {
             // success
         }).catch((error) => {
             // error
             Alert.alert("Error", error.message);
         });
-
     }
 
     goToInitialScreen()
@@ -119,13 +121,13 @@ export class MainScreen extends Component {
     }
 
     searchSong(event){
-        Spotify.search(event.nativeEvent.text, ['album','artist','playlist','track']).then((ret) => {
+        Spotify.search(event.nativeEvent.text, ['album', 'artist', 'playlist', 'track']).then((ret) => {
             // success
             this.setState({track: ret.tracks.items[0]}); //Most relevant song
-            return Spotify.playURI("spotify:track:"+this.state.track.id, 0, 0); //Play the song
+            return Spotify.playURI("spotify:track:" + ret.tracks.items[0].id, 0, 0); //Play the song
         }).catch((error) => {
             // error
-            console.log("Error: "+ error);
+            console.log("Error: " + error);
         });
     }
 
@@ -172,10 +174,10 @@ export class MainScreen extends Component {
             <Header onLogoutPress={this.spotifyLogoutButtonWasPressed}
                     onSearch={this.searchSong}/>
 
-            <Art url={this.state.track.album.images[0].url} />
+            <Art url={this.state.track ? this.state.track.album.images[0].url : null} />
 
-            <Track title={this.state.track.name}
-                   artist={this.state.track.artists[0].name} />
+            <Track title={this.state.track ? this.state.track.name : null}
+                   artist={this.state.track ? this.state.track.artists[0].name : null}/>
 
             <Control paused={!this.state.playing}
                      shuffleOn={this.state.shuffling}
@@ -188,7 +190,6 @@ export class MainScreen extends Component {
             />
 
             <SessionControl
-
                             initialSession={this.state.initialSession}
                             beforeSession={this.state.beforeSession}
                             inSession={this.state.inSession}
@@ -202,8 +203,6 @@ export class MainScreen extends Component {
 
             <PainSlider pain={this.state.pain}
                         onValueChange={this.onSliderChange} />
-
-            {/*<Text style={styles.text}>Pain: {this.state.pain}</Text>*/}
 
         </View>
         );
