@@ -25,6 +25,8 @@ import {
     Item,
     Form
 } from "native-base";
+import IDField from "./comps/IDField";
+import StaticDataForm from "./comps/StaticDataForm";
 export class InitialScreen extends Component
 {
     static navigationOptions = {
@@ -35,8 +37,14 @@ export class InitialScreen extends Component
     {
         super();
 
-        this.state = {spotifyInitialized: false, loginSuccessful: false};
+        this.state = {
+            spotifyInitialized: false,
+            loginSuccessful: false,
+            formStep: 0,
+            participantID: null
+        };
         this.spotifyLoginButtonWasPressed = this.spotifyLoginButtonWasPressed.bind(this);
+        this.nextPage = this.nextPage.bind(this);
     }
 
     goToPlayer()
@@ -112,6 +120,20 @@ export class InitialScreen extends Component
         });
     }
 
+    nextPage(){
+        this.setState({formStep: this.state.formStep+=1})
+    }
+
+    renderForm(){
+        if(this.state.formStep == 0){
+            return(<IDField
+                parent={this}
+            />)
+        }else if(this.state.formStep == 1){
+            return(<StaticDataForm/>)
+        }
+    }
+
     render()
     {
         if(!this.state.spotifyInitialized)
@@ -148,42 +170,9 @@ export class InitialScreen extends Component
 
                     }
                     <Container style={styles.mid}>
-                        <Content padder >
 
+                        {this.renderForm()}
 
-                            <FormLabel>Name</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Age (years)</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Gender</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Race/Ethnicity</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Marital status</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Duration of pain</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Systolic blood pressure</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>BMI</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>High blood pressure</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-
-
-                            <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
-                                <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
-                            </TouchableHighlight>
-                        </Content>
                     </Container>
 
 
