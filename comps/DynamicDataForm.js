@@ -13,7 +13,7 @@ import {
     TouchableHighlight, TextInput
 } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import {Content} from "native-base";
+import {Container, Content} from "native-base";
 
 const DynamicDataForm = ({
                             sbp,
@@ -24,7 +24,9 @@ const DynamicDataForm = ({
                              handleHBPChange,
                              prevPage,
                              spotifyLoginButtonWasPressed
+
                         })=>(
+    <Container style={styles.mid}>
     <Content padder >
 
         <Text style={styles.text}>Systolic blood pressure</Text>
@@ -41,14 +43,23 @@ const DynamicDataForm = ({
             <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={prevPage} style={styles.spotifyLoginButton}>
+        <TouchableHighlight onPress={prevPage} style={styles.nextPageButton}>
             <Text style={styles.spotifyLoginButtonText}>Back</Text>
         </TouchableHighlight>
     </Content>
-
+    </Container>
 );
 
 const styles = StyleSheet.create({
+    nextPageButton:{
+        marginRight:40,
+        marginLeft:40,
+        marginTop:10,
+        paddingTop:20,
+        paddingBottom:20,
+        backgroundColor:'#226FB2',
+        borderRadius:10,
+    },
     IMAGSTitle:{
         flex: 1,
 
@@ -101,13 +112,13 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
     },
     spotifyLoginButton: {
-        borderRadius: 18,
-        alignItems: 'center',
-        backgroundColor: 'green',
-        overflow: 'hidden',
-        width: 200,
-        height: 40,
-        margin: 20
+        marginRight:40,
+        marginLeft:40,
+        marginTop:10,
+        paddingTop:20,
+        paddingBottom:20,
+        backgroundColor:'green',
+        borderRadius:10
     },
     spotifyLoginButtonText: {
         fontSize: 20,
@@ -117,6 +128,7 @@ const styles = StyleSheet.create({
     input:{
         borderRadius:10,
         backgroundColor: 'rgba(100, 100, 100, 0.70)',
+        color: 'rgba(255, 255, 255, 0.72)'
     },
     message: {
         flex: 1,

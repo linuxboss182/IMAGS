@@ -46,6 +46,7 @@ const PainSlider = ({
 export default PainSlider;
 
 const styles = StyleSheet.create({
+
     container: {
         marginTop: 30,
         marginLeft: 20,

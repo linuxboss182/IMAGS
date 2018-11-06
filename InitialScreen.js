@@ -197,6 +197,7 @@ export class InitialScreen extends Component
 
                 nextPage = {this.nextPage}
                 prevPage = {this.prevPage}
+
             />)
         }else if(this.state.formStep == 2){
             return(<DynamicDataForm
@@ -210,6 +211,7 @@ export class InitialScreen extends Component
 
                 prevPage={this.prevPage}
                 spotifyLoginButtonWasPressed={this.spotifyLoginButtonWasPressed}
+
             />)
         }
     }
@@ -249,11 +251,11 @@ export class InitialScreen extends Component
                         </Text>
 
                     }
-                    <Container style={styles.mid}>
+
 
                         {this.renderForm()}
 
-                    </Container>
+
 
 
 
