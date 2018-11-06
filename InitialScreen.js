@@ -25,8 +25,12 @@ import {
     Item,
     Form
 } from "native-base";
+
 import IDField from "./comps/IDField";
 import StaticDataForm from "./comps/StaticDataForm";
+import DynamicDataForm  from "./comps/DynamicDataForm";
+import firebase from "./comps/firebase";
+
 export class InitialScreen extends Component
 {
     static navigationOptions = {
@@ -41,10 +45,23 @@ export class InitialScreen extends Component
             spotifyInitialized: false,
             loginSuccessful: false,
             formStep: 0,
-            participantID: null
+
+            participantID: null,
+            name: null,
+            age: null,
+            gender: null,
+            race: null,
+            marital: null,
+            painDur: null,
+
+            sbp: null,
+            bmi: null,
+            hbp :null
+
         };
         this.spotifyLoginButtonWasPressed = this.spotifyLoginButtonWasPressed.bind(this);
         this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
     }
 
     goToPlayer()
@@ -97,6 +114,28 @@ export class InitialScreen extends Component
         }
     }
 
+    sendToFirebase(){
+        const staticInfoRef = firebase.database().ref('staticParticipantInfo');
+        const  staticInfoSession = {
+            name: this.state.name,
+            age: this.state.age,
+            gender: this.state.gender,
+            race: this.state.race,
+            marital: this.state.marital,
+            painDur: this.state.painDur
+        };
+
+        staticInfoRef.push(staticInfoSession);
+
+        const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
+        const dynamicInfoSession = {
+            sbp: this.state.sbp,
+            bmi: this.state.bmi,
+            hbp: this.state.hbp
+        };
+        dynamicInfoRef.push(dynamicInfoSession);
+    }
+
     spotifyLoginButtonWasPressed()
     {
 
@@ -105,6 +144,7 @@ export class InitialScreen extends Component
 
             if(loggedIn)
             {
+                this.sendToFirebase()
                 // logged in
                 this.goToPlayer();
             }
@@ -124,13 +164,53 @@ export class InitialScreen extends Component
         this.setState({formStep: this.state.formStep+=1})
     }
 
+    prevPage(){
+        this.setState({formStep: this.state.formStep-=1})
+    }
+
+
+
     renderForm(){
         if(this.state.formStep == 0){
             return(<IDField
-                parent={this}
+                participantID = {this.state.participantID}
+                handleIDChange = {(text) => this.setState({participantID: text})}
+                nextPage = {this.nextPage}
+
             />)
         }else if(this.state.formStep == 1){
-            return(<StaticDataForm/>)
+            return(<StaticDataForm
+                name = {this.state.name}
+                age = {this.state.age}
+                gender = {this.state.gender}
+                race = {this.state.race}
+                marital = {this.state.marital}
+                painDur = {this.state.painDur}
+
+                handleNameChange = {(text) => this.setState({name : text})}
+                handleAgeChange = {(text) => this.setState({age : text})}
+                handleGenderChange = {(text) => this.setState({gender : text})}
+                handleRaceChange = {(text) => this.setState({race : text})}
+                handleMaritalChange = {(text) => this.setState({marital : text})}
+                handlePainDurChange = {(text) => this.setState({painDur : text})}
+
+
+                nextPage = {this.nextPage}
+                prevPage = {this.prevPage}
+            />)
+        }else if(this.state.formStep == 2){
+            return(<DynamicDataForm
+                sbp = {this.state.sbp}
+                bmi = {this.state.bmi}
+                hbp = {this.state.hbp}
+
+                handleSBPChange = {(text) => this.setState({sbp : text})}
+                handleBMIChange = {(text) => this.setState({bmi : text})}
+                handleHBPChange = {(text) => this.setState({hbp : text})}
+
+                prevPage={this.prevPage}
+                spotifyLoginButtonWasPressed={this.spotifyLoginButtonWasPressed}
+            />)
         }
     }
 

@@ -15,48 +15,30 @@ import {
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import {Content} from "native-base";
 
-const StaticDataForm = ({
-                            name,
-age,
-gender,
-race,
-marital,
-painDur,
-
-handleNameChange,
-handleAgeChange,
-handleGenderChange,
-handleRaceChange,
-handleMaritalChange,
-handlePainDurChange,
-    nextPage,
-    prevPage
-
-})=>(
+const DynamicDataForm = ({
+                            sbp,
+                            bmi,
+                             hbp,
+                             handleSBPChange,
+                             handleBMIChange,
+                             handleHBPChange,
+                             prevPage,
+                             spotifyLoginButtonWasPressed
+                        })=>(
     <Content padder >
 
+        <Text style={styles.text}>Systolic blood pressure</Text>
+        <TextInput  style={styles.input} defaultValue={sbp} onChangeText={handleSBPChange}/>
+
+        <Text style={styles.text}>BMI</Text>
+        <TextInput  style={styles.input} defaultValue={bmi} onChangeText={handleBMIChange}/>
+
+        <Text style={styles.text}>High blood pressure</Text>
+        <TextInput  style={styles.input} defaultValue={hbp} onChangeText={handleHBPChange}/>
 
 
-        <Text style={styles.text}>Name</Text>
-        <TextInput  style={styles.input} defaultValue={name} onChangeText={handleNameChange}/>
-
-        <Text style={styles.text}>Age (years)</Text>
-        <TextInput  style={styles.input} defaultValue={age} onChangeText={handleAgeChange}/>
-
-        <Text style={styles.text}>Gender</Text>
-        <TextInput  style={styles.input} defaultValue={gender} onChangeText={handleGenderChange}/>
-
-        <Text style={styles.text}>Race/Ethnicity</Text>
-        <TextInput  style={styles.input} defaultValue={race} onChangeText={handleRaceChange}/>
-
-        <Text style={styles.text}>Marital Status</Text>
-        <TextInput  style={styles.input} defaultValue={marital} onChangeText={handleMaritalChange}/>
-
-        <Text style={styles.text}>Duration of Pain</Text>
-        <TextInput  style={styles.input} defaultValue={painDur} onChangeText={handlePainDurChange}/>
-
-        <TouchableHighlight onPress={nextPage} style={styles.spotifyLoginButton}>
-            <Text style={styles.spotifyLoginButtonText}>Continue</Text>
+        <TouchableHighlight onPress={spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
+            <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
         </TouchableHighlight>
 
         <TouchableHighlight onPress={prevPage} style={styles.spotifyLoginButton}>
@@ -154,4 +136,4 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(4,4,4)'
     }
 });
-export default StaticDataForm;
+export default DynamicDataForm;
