@@ -31,7 +31,8 @@ export class MainScreen extends Component {
         beforeSession: false,
         inSession: false,
         afterSession: false,
-        events : []
+        events : [],
+        songStates : []
         // track: {
         //     id: "3FCto7hnn1shUyZL42YgfO",
         //     album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -66,16 +67,21 @@ export class MainScreen extends Component {
 
     songEventHandler(event, type){
         //create new playbackEvent
-        var newPlaybackEvent = {eventType: type, date:new Date().getTime(),state: event.state, track: event.metadata.currentTrack};
+        var newPlaybackEvent = {eventType: type, date:new Date().getTime()};
         //add to events
         var newEvents = this.state.events.concat(newPlaybackEvent);
 
+        //create new songState
+        var newSongState = {state: event.state, track: event.metadata.currentTrack}
+        //add to SongStates
+        var newSongStates = this.state.songStates.concat(newSongState)
         //Update state
         this.setState({
             playing: event.state.playing,
             shuffling: event.state.shuffling,
             repeating: event.state.repeating,
-            events: newEvents
+            events: newEvents,
+            songStates: newSongStates
         });
     }
 
@@ -158,7 +164,8 @@ export class MainScreen extends Component {
 
         const sessionsRef = firebase.database().ref('sessions');
         const session = {
-            events: this.state.events
+            events: this.state.events,
+            songStates: this.state.songStates
         };
         sessionsRef.push(session);
 
