@@ -32,7 +32,9 @@ export class MainScreen extends Component {
         inSession: false,
         afterSession: false,
         events : [],
-        songStates : []
+        songStates : [],
+        //-1 before any song states occour, first song state is 0
+        curSongState : -1
         // track: {
         //     id: "3FCto7hnn1shUyZL42YgfO",
         //     album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -49,30 +51,36 @@ export class MainScreen extends Component {
         this.searchSong = this.searchSong.bind(this);
         this.songEventHandler = this.songEventHandler.bind(this);
         this.painEventHandler = this.painEventHandler.bind(this);
+        this.medEventHandler = this.medEventHandler.bind(this);
         this.onSliderChange = this.onSliderChange.bind(this);
         this.sessionStart = this.sessionStart.bind(this);
         this.sessionEnd = this.sessionEnd.bind(this);
+        this.onMedYes = this.onMedYes.bind(this);
+        this.onMedNo = this.onMedNo.bind(this);
     }
 
-    painEventHandler(pain, type){
-        var newPainEvent = {eventType:type,date:new Date().getTime(),pain:pain}
+    painEventHandler(type){
+        var newPainEvent = {eventType:type,date:new Date().getTime(),pain:this.state.pain, songState: this.state.curSongState}
         var newEvents = this.state.events.concat(newPainEvent);
 
         //Update state
         this.setState({
             events: newEvents,
-            lastRecordedPain: pain
+            lastRecordedPain: this.state.pain
         });
     }
 
     songEventHandler(event, type){
         //create new playbackEvent
-        var newPlaybackEvent = {eventType: type, date:new Date().getTime()};
+        var newPlaybackEvent = {eventType: type, date:new Date().getTime(), pain:this.state.pain, songState: this.state.curSongState};
         //add to events
         var newEvents = this.state.events.concat(newPlaybackEvent);
 
         //create new songState
-        var newSongState = {state: event.state, track: event.metadata.currentTrack}
+        //increment cursongState
+        this.setState({curSongState:this.state.curSongState+=1})
+
+        var newSongState = {id: this.state.curSongState, state: event.state, track: event.metadata.currentTrack}
         //add to SongStates
         var newSongStates = this.state.songStates.concat(newSongState)
         //Update state
@@ -82,6 +90,15 @@ export class MainScreen extends Component {
             repeating: event.state.repeating,
             events: newEvents,
             songStates: newSongStates
+        });
+    }
+
+    medEventHandler(tookMed){
+        var newMedEvent = {eventType: 'medEvent', data:new Date().getTime(), tookMed:tookMed, pain:this.state.pain, songState:this.state.curSongState}
+        var newEvents = this.state.events.concat(newMedEvent);
+        //Update state
+        this.setState({
+            events: newEvents,
         });
     }
 
@@ -148,19 +165,23 @@ export class MainScreen extends Component {
             //if there is a significant difference between currect apin and last recorded pain, record pain
             if (Math.abs(this.state.pain - this.state.lastRecordedPain) >= PAIN_RECORD_THRESHOLD) {
                 //record pain
-                this.painEventHandler(pain, 'painChange');
+                this.painEventHandler('painChange');
             }
         }
     }
 
     sessionStart(){
         this.setState({beforeSession: false, inSession: true});
-        this.painEventHandler(this.state.pain,'sessionStart')
+        this.painEventHandler('sessionStart')
     }
 
     sessionEnd(){
         this.setState({inSession: false, afterSession: true});
-        this.painEventHandler(this.state.pain,'sessionEnd');
+        this.painEventHandler('sessionEnd');
+
+    }
+
+    sendDataToFirebase(){
 
         const sessionsRef = firebase.database().ref('sessions');
         const session = {
@@ -170,9 +191,21 @@ export class MainScreen extends Component {
         sessionsRef.push(session);
 
         this.setState({
-            events: []
+            events: [],
+            songStates :[]
         });
+    }
 
+    onMedYes(){
+        this.setState({afterSession: false, initialSession: false})
+        this.medEventHandler(true)
+        this.sendDataToFirebase()
+    }
+
+    onMedNo(){
+        this.setState({afterSession: false, initialSession: false})
+        this.medEventHandler(false)
+        this.sendDataToFirebase()
     }
 
     render() {
@@ -203,8 +236,8 @@ export class MainScreen extends Component {
                             afterSession={this.state.afterSession}
                             onBegin= {this.sessionStart}
                             onEnd={this.sessionEnd}
-                            onYes={()=> this.setState({afterSession: false, initialSession: false})}
-                            onNo={()=> this.setState({afterSession: false, initialSession: false})}
+                            onYes={this.onMedYes}
+                            onNo={this.onMedNo}
                             onCancel={()=> this.setState({afterSession: false, inSession: true})}
             />
 
