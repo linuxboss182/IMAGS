@@ -32,7 +32,8 @@ export class MainScreen extends Component {
         inSession: false,
         afterSession: false,
         events : [],
-        songStates : []
+        songStates : [],
+        songIDs : []
         // track: {
         //     id: "3FCto7hnn1shUyZL42YgfO",
         //     album: {images: [{url: "https://i.scdn.co/image/05adfbc8914bec4983675dec65c514dcab13beb6"}]},
@@ -72,9 +73,10 @@ export class MainScreen extends Component {
         var newEvents = this.state.events.concat(newPlaybackEvent);
 
         //create new songState
-        var newSongState = {state: event.state, track: event.metadata.currentTrack}
+        var newSongState = {state: event.state, songID: (event.metadata.currentTrack != null ? event.metadata.currentTrack.uri : -1)}
         //add to SongStates
         var newSongStates = this.state.songStates.concat(newSongState)
+
         //Update state
         this.setState({
             playing: event.state.playing,
@@ -83,6 +85,28 @@ export class MainScreen extends Component {
             events: newEvents,
             songStates: newSongStates
         });
+
+        //If there is a track
+        if(event.metadata.currentTrack!=null) {
+            //if song uri is unique, add it to songIDs
+            var songAlreadyExists = this.state.songIDs.some(function (o) {
+                return o["songID"] == event.metadata.currentTrack.uri
+            })
+
+            if (!songAlreadyExists) {
+                //add to songIDs
+                var curSongIDs = this.state.songIDs
+                curSongIDs[event.metadata.currentTrack.uri] = event.metadata.currentTrack
+                this.setState({
+                    songIDs: curSongIDs
+                });
+            }
+        }
+
+
+
+
+
     }
 
     componentDidMount()
@@ -165,8 +189,10 @@ export class MainScreen extends Component {
         const sessionsRef = firebase.database().ref('sessions');
         const session = {
             events: this.state.events,
-            songStates: this.state.songStates
+            songStates: this.state.songStates,
+            songIDs : this.state.songIDs
         };
+
         sessionsRef.push(session);
 
         this.setState({
