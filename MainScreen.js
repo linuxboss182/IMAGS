@@ -119,10 +119,13 @@ export class MainScreen extends Component {
     medEventHandler(tookMed){
         var newMedEvent = {eventType: 'medEvent', data:new Date().getTime(), tookMed:tookMed, pain:this.state.pain, songState:this.state.curSongState}
         var newEvents = this.state.events.concat(newMedEvent);
+        console.log(newEvents)
+
         //Update state
         this.setState({
-            events: newEvents,
-        });
+            events: newEvents
+        }, this.sendDataToFirebase);
+
     }
 
     componentDidMount()
@@ -217,20 +220,19 @@ export class MainScreen extends Component {
 
         this.setState({
             events: [],
-            songStates :[]
+            songStates :[],
+            songIDs: this.state.songIDs
         });
     }
 
     onMedYes(){
         this.setState({afterSession: false, initialSession: false})
         this.medEventHandler(true)
-        this.sendDataToFirebase()
     }
 
     onMedNo(){
         this.setState({afterSession: false, initialSession: false})
         this.medEventHandler(false)
-        this.sendDataToFirebase()
     }
 
     render() {
