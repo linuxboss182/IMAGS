@@ -26,6 +26,7 @@ import {
     Form
 } from "native-base";
 
+import IDQuestion from "./comps/IDQuestion";
 import IDField from "./comps/IDField";
 import StaticDataForm from "./comps/StaticDataForm";
 import DynamicDataForm  from "./comps/DynamicDataForm";
@@ -46,22 +47,30 @@ export class InitialScreen extends Component
             loginSuccessful: false,
             formStep: 0,
 
-            participantID: null,
-            name: null,
-            age: null,
-            gender: null,
-            race: null,
-            marital: null,
-            painDur: null,
+            participantID: "",
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: "",
 
             sbp: null,
             bmi: null,
-            hbp :null
+            hbp :null,
+
+            validID: true,
+            key: ""
 
         };
         this.spotifyLoginButtonWasPressed = this.spotifyLoginButtonWasPressed.bind(this);
         this.nextPage = this.nextPage.bind(this);
         this.prevPage = this.prevPage.bind(this);
+        this.handleIDChange = this.handleIDChange.bind(this);
+        this.onConfirmID = this.onConfirmID.bind(this);
+        this.onNoID = this.onNoID.bind(this);
+        this.makeID = this.makeID.bind(this);
+        this.newParticipant = this.newParticipant.bind(this);
     }
 
     goToPlayer()
@@ -115,6 +124,7 @@ export class InitialScreen extends Component
     }
 
     sendToFirebase(){
+
         const staticInfoRef = firebase.database().ref('staticParticipantInfo');
         const  staticInfoSession = {
             name: this.state.name,
@@ -122,18 +132,26 @@ export class InitialScreen extends Component
             gender: this.state.gender,
             race: this.state.race,
             marital: this.state.marital,
-            painDur: this.state.painDur
+            painDur: this.state.painDur,
+            id: this.state.participantID,
         };
 
-        staticInfoRef.push(staticInfoSession);
+        let updates = {}
+        updates['/staticParticipantInfo/'+this.state.key] = staticInfoSession
+        firebase.database().ref('staticParticipantInfo').child(this.state.key).set(staticInfoSession,()=>{console.log("Done Updating")})
 
-        const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
-        const dynamicInfoSession = {
-            sbp: this.state.sbp,
-            bmi: this.state.bmi,
-            hbp: this.state.hbp
-        };
-        dynamicInfoRef.push(dynamicInfoSession);
+
+
+        //
+        // staticInfoRef.push(staticInfoSession);
+        //
+        // const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
+        // const dynamicInfoSession = {
+        //     sbp: this.state.sbp,
+        //     bmi: this.state.bmi,
+        //     hbp: this.state.hbp
+        // };
+        // dynamicInfoRef.push(dynamicInfoSession);
     }
 
     spotifyLoginButtonWasPressed()
@@ -168,17 +186,119 @@ export class InitialScreen extends Component
         this.setState({formStep: this.state.formStep-=1})
     }
 
+    handleIDChange(text){
+       this.setState({participantID: text})
 
+    }
+
+    onConfirmID(){
+
+        //assume invalid ID until we find a valid one
+        this.setState({validID:false})
+        //if this ID exists, update all fields
+        let participants =  firebase.database().ref('staticParticipantInfo');
+        participants.on("value", (snapshot)=>{
+            let items = snapshot.val()
+            console.log(items)
+            for(let item in items){
+                if(items[item].id==this.state.participantID){
+                    console.log("you are "+items[item].name)
+                    this.setState({
+                        name: items[item].name,
+                        age: items[item].age,
+                        gender: items[item].gender,
+                        race: items[item].race,
+                        marital: items[item].marital,
+                        painDur: items[item].painDur,
+                        validID: true,
+                        key: items[item].key,
+                        formStep: this.state.formStep += 1
+                    })
+                }
+            }
+        })
+
+        // console.log(this.state.validID)
+        // if(this.state.validID) {
+        //     this.setState({formStep: this.state.formStep += 1})
+        // }
+    }
+
+    makeID(length){
+        let output = ""
+        let viableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+
+        for(let i = 0; i < length;i++){
+            output+= viableChars.charAt(Math.floor(Math.random()*viableChars.length))
+        }
+
+        return output
+    }
+
+    newParticipant(){
+        const staticInfoRef = firebase.database().ref('staticParticipantInfo');
+
+        let newID = this.makeID(5);
+        const  staticInfoSession = {
+            id: newID,
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: ""
+        };
+
+
+
+        let newKey = staticInfoRef.push(staticInfoSession).key
+
+        this.setState({
+            participantID: newID,
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: "",
+            validID: true,
+            key: newKey
+        })
+
+        console.log("new key "+newKey)
+
+        const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
+        const dynamicInfoSession = {
+            participant: 12345,
+            sbp: null,
+            bmi: null,
+            hbp: null
+        };
+        dynamicInfoRef.push(dynamicInfoSession);
+    }
+
+    onNoID(){
+        //create new participant
+        this.newParticipant()
+        //skip to form
+        this.setState({formStep: this.state.formStep+=2})
+    }
 
     renderForm(){
         if(this.state.formStep == 0){
-            return(<IDField
-                participantID = {this.state.participantID}
-                handleIDChange = {(text) => this.setState({participantID: text})}
-                nextPage = {this.nextPage}
-
+            return(<IDQuestion
+                onHasID = {this.nextPage}
+                onNoID = {this.onNoID}
             />)
         }else if(this.state.formStep == 1){
+            return(<IDField
+                participantID = {this.state.participantID}
+                handleIDChange = {(text)=>{this.handleIDChange(text)}}
+                nextPage = {this.onConfirmID}
+                prevPage = {this.prevPage}
+                validID = {this.state.validID}
+            />)
+        }else if(this.state.formStep == 2){
             return(<StaticDataForm
                 name = {this.state.name}
                 age = {this.state.age}
@@ -199,7 +319,7 @@ export class InitialScreen extends Component
                 prevPage = {this.prevPage}
 
             />)
-        }else if(this.state.formStep == 2){
+        }else if(this.state.formStep == 3){
             return(<DynamicDataForm
                 sbp = {this.state.sbp}
                 bmi = {this.state.bmi}

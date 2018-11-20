@@ -64,10 +64,6 @@ handlePainDurChange,
             <Text style={styles.spotifyLoginButtonText}>Continue</Text>
         </TouchableHighlight>
 
-        <TouchableHighlight onPress={prevPage} style={styles.nextPageButton}>
-            <Text style={styles.spotifyLoginButtonText}>Back</Text>
-        </TouchableHighlight>
-
     </Content>
     </Container>
 );

@@ -1,5 +1,5 @@
 /**
- * Created by andrewnemeth on 11/5/18.
+ * Created by andrewnemeth on 11/20/18.
  */
 
 import React, {Component} from 'react';
@@ -16,33 +16,29 @@ import {
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import {Container, Content} from "native-base";
 
-const IDField = ({
-                     participantID,
-                     handleIDChange,
-                     nextPage,
-                     prevPage,
-                    validID
+const IDQuestion = ({
+                     onHasID,
+                     onNoID
 
                  })=>(
     <Container style={styles.centerMid}>
 
-    <Content padder >
+        <Content padder >
 
-       <Text style={styles.text}>Please Enter Your ID</Text>
-       <TextInput  style={styles.input} defaultValue={participantID} onChangeText={handleIDChange}/>
-        {validID? <Text style={styles.text}></Text>:<Text style={styles.text}>The ID you entered does not exist</Text>}
+            <Text style={styles.text}>Have you been provided an ID?</Text>
 
-       <View style={styles.buttonView}>
 
-           <TouchableHighlight onPress={nextPage} style={styles.nextPageButton}>
-                <Text style={styles.spotifyLoginButtonText}>Continue</Text>
-            </TouchableHighlight>
-           <TouchableHighlight onPress={prevPage} style={styles.nextPageButton}>
-               <Text style={styles.spotifyLoginButtonText}>Back</Text>
-           </TouchableHighlight>
-       </View>
-
-    </Content>
+            <View style={styles.buttonView}>
+                <TouchableHighlight onPress={onHasID} style={styles.nextPageButton}>
+                    <Text style={styles.spotifyLoginButtonText}>Yes</Text>
+                </TouchableHighlight>
+            </View>
+            <View style={styles.buttonView}>
+                <TouchableHighlight onPress={onNoID} style={styles.nextPageButton}>
+                    <Text style={styles.spotifyLoginButtonText}>No</Text>
+                </TouchableHighlight>
+            </View>
+        </Content>
     </Container>
 
 );
@@ -154,4 +150,4 @@ const styles = StyleSheet.create({
         backgroundColor: 'rgb(4,4,4)'
     }
 });
-export default IDField;
+export default IDQuestion;
