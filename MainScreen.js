@@ -15,6 +15,7 @@ import Track from './comps/track.js';
 import PainSlider from './comps/slider.js';
 import SessionControl from './comps/sessionControl.js';
 import firebase from './comps/firebase.js';
+import prefs from 'react-native-shared-preferences'
 
 const PAIN_RECORD_THRESHOLD = .5;
 
@@ -124,7 +125,7 @@ export class MainScreen extends Component {
         //Update state
         this.setState({
             events: newEvents
-        }, this.sendDataToFirebase);
+        }, prefs.getItem("key",(val)=>{this.sendDataToFirebase(val)}));
 
     }
 
@@ -207,22 +208,32 @@ export class MainScreen extends Component {
 
     }
 
-    sendDataToFirebase(){
 
-        const sessionsRef = firebase.database().ref('sessions');
-        const session = {
-            events: this.state.events,
-            songStates: this.state.songStates,
-            songIDs : this.state.songIDs
-        };
+    sendDataToFirebase(pKey){
 
-        sessionsRef.push(session);
+            const sessionsRef = firebase.database().ref('sessions');
 
-        this.setState({
-            events: [],
-            songStates :[],
-            songIDs: this.state.songIDs
-        });
+            const session = {
+                events: this.state.events,
+                songStates: this.state.songStates,
+                songIDs : this.state.songIDs,
+                participant : pKey
+            };
+
+            let sessionKey = sessionsRef.push(session).key;
+
+            //add session key to participant
+            const participantSessions = firebase.database().ref('staticParticipantInfo').child(pKey).child("sessions");
+            // participantSessions.append(sessionKey)
+            //
+            // firebase.database().ref('staticParticipantInfo').child(pKey).child("sessions").set(participantSessions,()=>{console.log("Done Updating")})
+
+            this.setState({
+                events: [],
+                songStates :[],
+                songIDs: this.state.songIDs
+            });
+
     }
 
     onMedYes(){

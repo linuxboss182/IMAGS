@@ -139,7 +139,7 @@ export class InitialScreen extends Component
 
         let updates = {}
         updates['/staticParticipantInfo/'+this.state.key] = staticInfoSession
-        firebase.database().ref('staticParticipantInfo').child(this.state.key).set(staticInfoSession,()=>{console.log("Done Updating")})
+        firebase.database().ref('staticParticipantInfo').child(this.state.key).set(staticInfoSession,()=>{})
 
 
 
@@ -200,12 +200,10 @@ export class InitialScreen extends Component
         let participants =  firebase.database().ref('staticParticipantInfo');
         participants.on("value", (snapshot)=>{
             let items = snapshot.val()
-            console.log(items)
             for(let item in items){
                 if(items[item].id==this.state.participantID){ //if id entered is valid
                     //save it locally
                     prefs.setItem("key",items[item].key)
-                    console.log("you are "+items[item].name)
                     this.setState({
                         name: items[item].name,
                         age: items[item].age,
@@ -221,10 +219,6 @@ export class InitialScreen extends Component
             }
         })
 
-        // console.log(this.state.validID)
-        // if(this.state.validID) {
-        //     this.setState({formStep: this.state.formStep += 1})
-        // }
     }
 
     makeID(length){
