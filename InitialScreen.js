@@ -31,6 +31,7 @@ import IDField from "./comps/IDField";
 import StaticDataForm from "./comps/StaticDataForm";
 import DynamicDataForm  from "./comps/DynamicDataForm";
 import firebase from "./comps/firebase";
+import prefs from 'react-native-shared-preferences';
 
 export class InitialScreen extends Component
 {
@@ -201,7 +202,9 @@ export class InitialScreen extends Component
             let items = snapshot.val()
             console.log(items)
             for(let item in items){
-                if(items[item].id==this.state.participantID){
+                if(items[item].id==this.state.participantID){ //if id entered is valid
+                    //save it locally
+                    prefs.setItem("key",items[item].key)
                     console.log("you are "+items[item].name)
                     this.setState({
                         name: items[item].name,
@@ -249,8 +252,6 @@ export class InitialScreen extends Component
             painDur: ""
         };
 
-
-
         let newKey = staticInfoRef.push(staticInfoSession).key
 
         this.setState({
@@ -265,7 +266,8 @@ export class InitialScreen extends Component
             key: newKey
         })
 
-        console.log("new key "+newKey)
+        //save locally
+        prefs.setItem("key",newKey)
 
         const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
         const dynamicInfoSession = {

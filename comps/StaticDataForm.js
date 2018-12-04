@@ -1,7 +1,6 @@
 /**
  * Created by andrewnemeth on 11/5/18.
  */
-
 import React, {Component} from 'react';
 import {
     View,
