@@ -34,6 +34,7 @@ export class MainScreen extends Component {
         afterSession: false,
         events : [],
         songStates : [],
+        songAttributes : [],
         //-1 before any song states occour, first song state is 0
         curSongState : -1,
         songIDs : []
@@ -73,6 +74,7 @@ export class MainScreen extends Component {
     }
 
     songEventHandler(event, type){
+
         //create new playbackEvent
         var newPlaybackEvent = {eventType: type, date:new Date().getTime(), pain:this.state.pain, songState: this.state.curSongState};
         //add to events
@@ -108,6 +110,25 @@ export class MainScreen extends Component {
                 this.setState({
                     songIDs: curSongIDs
                 });
+                //add to song attributes
+
+
+                //get id from URI
+                let songID = event.metadata.currentTrack.uri.substring(14)
+
+                var attributePromise = Spotify.getTrackAudioFeatures(songID)
+                attributePromise.then( (attributes)=> {
+                    var curSongAttributes = this.state.songAttributes
+                    curSongAttributes[event.metadata.currentTrack.uri] = attributes
+
+                    console.log(curSongAttributes)
+
+                    this.setState({
+                        songAttributes: curSongAttributes
+                    });
+                })
+
+
             }
         }
 
@@ -205,7 +226,6 @@ export class MainScreen extends Component {
     sessionEnd(){
         this.setState({inSession: false, afterSession: true});
         this.painEventHandler('sessionEnd');
-
     }
 
 
@@ -217,6 +237,7 @@ export class MainScreen extends Component {
                 events: this.state.events,
                 songStates: this.state.songStates,
                 songIDs : this.state.songIDs,
+                songAttributes : this.state.songAttributes,
                 participant : pKey
             };
 
