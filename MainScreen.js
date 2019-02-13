@@ -113,20 +113,27 @@ export class MainScreen extends Component {
                 //add to song attributes
 
 
-                //get id from URI
-                let songID = event.metadata.currentTrack.uri.substring(14)
+                //if uri exists, get id from URI
+                if(event.metadata.currentTrack.uri!=null) {
+                    let songID = event.metadata.currentTrack.uri.substring(14)
 
-                var attributePromise = Spotify.getTrackAudioFeatures(songID)
-                attributePromise.then( (attributes)=> {
-                    var curSongAttributes = this.state.songAttributes
-                    curSongAttributes[event.metadata.currentTrack.uri] = attributes
+                    var attributePromise = Spotify.getTrackAudioFeatures(songID)
+                    attributePromise.then( (attributes)=> {
+                        var curSongAttributes = this.state.songAttributes
 
-                    console.log(curSongAttributes)
 
-                    this.setState({
-                        songAttributes: curSongAttributes
-                    });
-                })
+
+                        curSongAttributes[event.metadata.currentTrack.uri] = attributes
+
+                        console.log(curSongAttributes)
+
+                        this.setState({
+                            songAttributes: curSongAttributes
+                        });
+                    })
+                }
+
+
 
 
             }
