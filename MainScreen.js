@@ -178,6 +178,7 @@ export class MainScreen extends Component {
             // error
             Alert.alert("Error", error.message);
         });
+
     }
 
     goToInitialScreen()
@@ -238,7 +239,7 @@ export class MainScreen extends Component {
 
     sendDataToFirebase(pKey){
 
-            const sessionsRef = firebase.database().ref('sessions');
+        const sessionsRef = firebase.database().ref('sessions');
 
             const session = {
                 events: this.state.events,
@@ -255,11 +256,19 @@ export class MainScreen extends Component {
             // participantSessions.append(sessionKey)
             //
             // firebase.database().ref('staticParticipantInfo').child(pKey).child("sessions").set(participantSessions,()=>{console.log("Done Updating")})
+            var attrRef = firebase.database().ref('songAttributes');
+
+
+            for(var a in this.state.songAttributes){
+                attrRef.child(a).set(this.state.songAttributes[a])
+            }
+
 
             this.setState({
                 events: [],
                 songStates :[],
-                songIDs: this.state.songIDs
+                songIDs: this.state.songIDs,
+                songAttributes :[]
             });
 
     }
