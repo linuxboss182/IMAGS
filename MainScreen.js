@@ -15,6 +15,7 @@ import Track from './comps/track.js';
 import PainSlider from './comps/slider.js';
 import SessionControl from './comps/sessionControl.js';
 import firebase from './comps/firebase.js';
+import prefs from 'react-native-shared-preferences'
 
 const PAIN_RECORD_THRESHOLD = .5;
 
@@ -33,6 +34,7 @@ export class MainScreen extends Component {
         afterSession: false,
         events : [],
         songStates : [],
+        songAttributes : [],
         //-1 before any song states occour, first song state is 0
         curSongState : -1,
         songIDs : []
@@ -72,6 +74,7 @@ export class MainScreen extends Component {
     }
 
     songEventHandler(event, type){
+
         //create new playbackEvent
         var newPlaybackEvent = {eventType: type, date:new Date().getTime(), pain:this.state.pain, songState: this.state.curSongState};
         //add to events
@@ -107,6 +110,32 @@ export class MainScreen extends Component {
                 this.setState({
                     songIDs: curSongIDs
                 });
+                //add to song attributes
+
+
+                //if uri exists, get id from URI
+                if(event.metadata.currentTrack.uri!=null) {
+                    let songID = event.metadata.currentTrack.uri.substring(14)
+
+                    var attributePromise = Spotify.getTrackAudioFeatures(songID)
+                    attributePromise.then( (attributes)=> {
+                        var curSongAttributes = this.state.songAttributes
+
+
+
+                        curSongAttributes[event.metadata.currentTrack.uri] = attributes
+
+                        console.log(curSongAttributes)
+
+                        this.setState({
+                            songAttributes: curSongAttributes
+                        });
+                    })
+                }
+
+
+
+
             }
         }
 
@@ -124,7 +153,7 @@ export class MainScreen extends Component {
         //Update state
         this.setState({
             events: newEvents
-        }, this.sendDataToFirebase);
+        }, prefs.getItem("key",(val)=>{this.sendDataToFirebase(val)}));
 
     }
 
@@ -149,6 +178,7 @@ export class MainScreen extends Component {
             // error
             Alert.alert("Error", error.message);
         });
+
     }
 
     goToInitialScreen()
@@ -204,25 +234,43 @@ export class MainScreen extends Component {
     sessionEnd(){
         this.setState({inSession: false, afterSession: true});
         this.painEventHandler('sessionEnd');
-
     }
 
-    sendDataToFirebase(){
+
+    sendDataToFirebase(pKey){
 
         const sessionsRef = firebase.database().ref('sessions');
-        const session = {
-            events: this.state.events,
-            songStates: this.state.songStates,
-            songIDs : this.state.songIDs
-        };
 
-        sessionsRef.push(session);
+            const session = {
+                events: this.state.events,
+                songStates: this.state.songStates,
+                songIDs : this.state.songIDs,
+                songAttributes : this.state.songAttributes,
+                participant : pKey
+            };
 
-        this.setState({
-            events: [],
-            songStates :[],
-            songIDs: this.state.songIDs
-        });
+            let sessionKey = sessionsRef.push(session).key;
+
+            //add session key to participant
+            const participantSessions = firebase.database().ref('staticParticipantInfo').child(pKey).child("sessions");
+            // participantSessions.append(sessionKey)
+            //
+            // firebase.database().ref('staticParticipantInfo').child(pKey).child("sessions").set(participantSessions,()=>{console.log("Done Updating")})
+            var attrRef = firebase.database().ref('songAttributes');
+
+
+            for(var a in this.state.songAttributes){
+                attrRef.child(a).set(this.state.songAttributes[a])
+            }
+
+
+            this.setState({
+                events: [],
+                songStates :[],
+                songIDs: this.state.songIDs,
+                songAttributes :[]
+            });
+
     }
 
     onMedYes(){
