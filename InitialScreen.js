@@ -42,6 +42,8 @@ export class InitialScreen extends Component
     {
         super();
 
+        console.disableYellowBox = true;
+
         this.state = {
             spotifyInitialized: false,
             loginSuccessful: false,

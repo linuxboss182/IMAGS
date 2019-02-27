@@ -25,7 +25,7 @@ const sessionControl = ({
     onCancel
 }) => (
     <View style={styles.container}>
-        {initialSession ? <Text style={styles.text}>Please Rate Initial Pain</Text> :
+        {initialSession ? <Text style={styles.text}>Please Rate Initial Pain (0-10)</Text> :
         beforeSession ? <Button style={styles.text} buttonStyle={styles.buttonStyle} title="Begin Session" onPress={onBegin}/> :
         inSession ? <Button style={styles.text} buttonStyle={styles.buttonStyle} title="End Session" onPress={onEnd}/> :
         afterSession ? <>
