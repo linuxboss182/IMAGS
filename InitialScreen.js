@@ -11,20 +11,6 @@ import {
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import { StackActions, NavigationActions } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
-import {
-    Container,
-    Header,
-    Title,
-    Content,
-    Button,
-    Icon,
-    Body,
-    Left,
-    Right,
-    Input,
-    Item,
-    Form
-} from "native-base";
 export class InitialScreen extends Component
 {
     static navigationOptions = {
@@ -147,8 +133,8 @@ export class InitialScreen extends Component
                         </Text>
 
                     }
-                    <Container style={styles.mid}>
-                        <Content padder >
+                    <View style={styles.mid}>
+                        <View padder >
 
 
                             <FormLabel>Name</FormLabel>
@@ -183,8 +169,8 @@ export class InitialScreen extends Component
                             <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
                                 <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
                             </TouchableHighlight>
-                        </Content>
-                    </Container>
+                        </View>
+                    </View>
 
 
 
