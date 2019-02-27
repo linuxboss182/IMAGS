@@ -3,6 +3,7 @@ package com.imags;
 import android.app.Application;
 
 import com.facebook.react.ReactApplication;
+import in.sriraman.sharedpreferences.RNSharedPreferencesReactPackage;
 import com.oblador.vectoricons.VectorIconsPackage;
 import com.lufinkey.react.eventemitter.RNEventEmitterPackage;
 import com.lufinkey.react.spotify.RNSpotifyPackage;
