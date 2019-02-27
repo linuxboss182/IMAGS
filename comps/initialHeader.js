@@ -22,7 +22,6 @@ const InitialHeader = ({
         <Image style={styles.IMAGSIcon} source={require('../img/IMAGS_icon.png')} />
         <Text style={styles.message}>IMAGS</Text>
 
-
     </View>
 );
 
@@ -48,8 +47,6 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         fontSize: 10,
     },
-
-
     containerStyle: {
         flex: 1,
         marginLeft: 50,

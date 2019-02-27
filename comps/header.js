@@ -62,7 +62,6 @@ const styles = StyleSheet.create({
         textAlign: 'center',
         color: 'rgba(255, 255, 255, 0.72)',
         fontWeight: 'bold',
-        fontSize: 10,
     },
     button: {
         opacity: 0.72

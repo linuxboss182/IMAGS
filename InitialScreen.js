@@ -11,6 +11,13 @@ import {
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
 import { StackActions, NavigationActions } from 'react-navigation';
 import Spotify from 'rn-spotify-sdk';
+import IDQuestion from "./comps/IDQuestion";
+import IDField from "./comps/IDField";
+import StaticDataForm from "./comps/StaticDataForm";
+import DynamicDataForm  from "./comps/DynamicDataForm";
+import firebase from "./comps/firebase";
+import prefs from 'react-native-shared-preferences';
+
 export class InitialScreen extends Component
 {
     static navigationOptions = {
@@ -21,8 +28,37 @@ export class InitialScreen extends Component
     {
         super();
 
-        this.state = {spotifyInitialized: false, loginSuccessful: false};
+        console.disableYellowBox = true;
+
+        this.state = {
+            spotifyInitialized: false,
+            loginSuccessful: false,
+            formStep: 0,
+
+            participantID: "",
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: "",
+
+            sbp: null,
+            bmi: null,
+            hbp :null,
+
+            validID: true,
+            key: ""
+
+        };
         this.spotifyLoginButtonWasPressed = this.spotifyLoginButtonWasPressed.bind(this);
+        this.nextPage = this.nextPage.bind(this);
+        this.prevPage = this.prevPage.bind(this);
+        this.handleIDChange = this.handleIDChange.bind(this);
+        this.onConfirmID = this.onConfirmID.bind(this);
+        this.onNoID = this.onNoID.bind(this);
+        this.makeID = this.makeID.bind(this);
+        this.newParticipant = this.newParticipant.bind(this);
     }
 
     goToPlayer()
@@ -75,6 +111,37 @@ export class InitialScreen extends Component
         }
     }
 
+    sendToFirebase(){
+
+        const staticInfoRef = firebase.database().ref('staticParticipantInfo');
+        const  staticInfoSession = {
+            name: this.state.name,
+            age: this.state.age,
+            gender: this.state.gender,
+            race: this.state.race,
+            marital: this.state.marital,
+            painDur: this.state.painDur,
+            id: this.state.participantID,
+        };
+
+        let updates = {}
+        updates['/staticParticipantInfo/'+this.state.key] = staticInfoSession
+        firebase.database().ref('staticParticipantInfo').child(this.state.key).set(staticInfoSession,()=>{})
+
+
+
+        //
+        // staticInfoRef.push(staticInfoSession);
+        //
+        // const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
+        // const dynamicInfoSession = {
+        //     sbp: this.state.sbp,
+        //     bmi: this.state.bmi,
+        //     hbp: this.state.hbp
+        // };
+        // dynamicInfoRef.push(dynamicInfoSession);
+    }
+
     spotifyLoginButtonWasPressed()
     {
 
@@ -83,6 +150,7 @@ export class InitialScreen extends Component
 
             if(loggedIn)
             {
+                this.sendToFirebase()
                 // logged in
                 this.goToPlayer();
             }
@@ -96,6 +164,159 @@ export class InitialScreen extends Component
             // error
             Alert.alert("Error", error.message);
         });
+    }
+
+    nextPage(){
+        this.setState({formStep: this.state.formStep+=1})
+    }
+
+    prevPage(){
+        this.setState({formStep: this.state.formStep-=1})
+    }
+
+    handleIDChange(text){
+       this.setState({participantID: text})
+
+    }
+
+    onConfirmID(){
+
+        //assume invalid ID until we find a valid one
+        this.setState({validID:false})
+        //if this ID exists, update all fields
+        let participants =  firebase.database().ref('staticParticipantInfo');
+        participants.on("value", (snapshot)=>{
+            let items = snapshot.val()
+            for(let item in items){
+                if(items[item].id==this.state.participantID){ //if id entered is valid
+                    //save it locally
+                    prefs.setItem("key",items[item].key)
+                    this.setState({
+                        name: items[item].name,
+                        age: items[item].age,
+                        gender: items[item].gender,
+                        race: items[item].race,
+                        marital: items[item].marital,
+                        painDur: items[item].painDur,
+                        validID: true,
+                        key: items[item].key,
+                        formStep: this.state.formStep += 1
+                    })
+                }
+            }
+        })
+
+    }
+
+    makeID(length){
+        let output = ""
+        let viableChars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"
+
+        for(let i = 0; i < length;i++){
+            output+= viableChars.charAt(Math.floor(Math.random()*viableChars.length))
+        }
+
+        return output
+    }
+
+    newParticipant(){
+        const staticInfoRef = firebase.database().ref('staticParticipantInfo');
+
+        let newID = this.makeID(5);
+        const  staticInfoSession = {
+            id: newID,
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: ""
+        };
+
+        let newKey = staticInfoRef.push(staticInfoSession).key
+
+        this.setState({
+            participantID: newID,
+            name: "",
+            age: "",
+            gender: "",
+            race: "",
+            marital: "",
+            painDur: "",
+            validID: true,
+            key: newKey
+        })
+
+        //save locally
+        prefs.setItem("key",newKey)
+
+        const dynamicInfoRef = firebase.database().ref('dynamicParticipantInfo');
+        const dynamicInfoSession = {
+            participant: 12345,
+            sbp: null,
+            bmi: null,
+            hbp: null
+        };
+        dynamicInfoRef.push(dynamicInfoSession);
+    }
+
+    onNoID(){
+        //create new participant
+        this.newParticipant()
+        //skip to form
+        this.setState({formStep: this.state.formStep+=2})
+    }
+
+    renderForm(){
+        if(this.state.formStep == 0){
+            return(<IDQuestion
+                onHasID = {this.nextPage}
+                onNoID = {this.onNoID}
+            />)
+        }else if(this.state.formStep == 1){
+            return(<IDField
+                participantID = {this.state.participantID}
+                handleIDChange = {(text)=>{this.handleIDChange(text)}}
+                nextPage = {this.onConfirmID}
+                prevPage = {this.prevPage}
+                validID = {this.state.validID}
+            />)
+        }else if(this.state.formStep == 2){
+            return(<StaticDataForm
+                name = {this.state.name}
+                age = {this.state.age}
+                gender = {this.state.gender}
+                race = {this.state.race}
+                marital = {this.state.marital}
+                painDur = {this.state.painDur}
+
+                handleNameChange = {(text) => this.setState({name : text})}
+                handleAgeChange = {(text) => this.setState({age : text})}
+                handleGenderChange = {(text) => this.setState({gender : text})}
+                handleRaceChange = {(text) => this.setState({race : text})}
+                handleMaritalChange = {(text) => this.setState({marital : text})}
+                handlePainDurChange = {(text) => this.setState({painDur : text})}
+
+
+                nextPage = {this.nextPage}
+                prevPage = {this.prevPage}
+
+            />)
+        }else if(this.state.formStep == 3){
+            return(<DynamicDataForm
+                sbp = {this.state.sbp}
+                bmi = {this.state.bmi}
+                hbp = {this.state.hbp}
+
+                handleSBPChange = {(text) => this.setState({sbp : text})}
+                handleBMIChange = {(text) => this.setState({bmi : text})}
+                handleHBPChange = {(text) => this.setState({hbp : text})}
+
+                prevPage={this.prevPage}
+                spotifyLoginButtonWasPressed={this.spotifyLoginButtonWasPressed}
+
+            />)
+        }
     }
 
     render()
@@ -133,44 +354,11 @@ export class InitialScreen extends Component
                         </Text>
 
                     }
-                    <View style={styles.mid}>
-                        <View padder >
 
 
-                            <FormLabel>Name</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Age (years)</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Gender</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Race/Ethnicity</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Marital status</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Duration of pain</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>Systolic blood pressure</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>BMI</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
-
-                            <FormLabel>High blood pressure</FormLabel>
-                            <FormInput containerStyle={styles.input} onChangeText={null}/>
+                        {this.renderForm()}
 
 
-
-                            <TouchableHighlight onPress={this.spotifyLoginButtonWasPressed} style={styles.spotifyLoginButton}>
-                                <Text style={styles.spotifyLoginButtonText}>Log into Spotify</Text>
-                            </TouchableHighlight>
-                        </View>
-                    </View>
 
 
 

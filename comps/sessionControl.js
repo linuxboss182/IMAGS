@@ -25,7 +25,7 @@ const sessionControl = ({
     onCancel
 }) => (
     <View style={styles.container}>
-        {initialSession ? <Text style={styles.text}>Please Rate Initial Pain</Text> :
+        {initialSession ? <Text style={styles.text}>Please Rate Initial Pain (0-10)</Text> :
         beforeSession ? <Button style={styles.text} buttonStyle={styles.buttonStyle} title="Begin Session" onPress={onBegin}/> :
         inSession ? <Button style={styles.text} buttonStyle={styles.buttonStyle} title="End Session" onPress={onEnd}/> :
         afterSession ? <>
@@ -49,6 +49,16 @@ const styles = StyleSheet.create({
         paddingTop: 30,
         marginLeft: 20,
         marginRight: 20,
+    },
+    textInit:{
+        flex: 1,
+        color: 'rgba(255, 255, 255, 0.72)',
+        fontWeight: 'bold',
+        fontSize: 24,
+        textAlign: 'center',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
     },
     text: {
         flex: 1,
