@@ -14,16 +14,15 @@ import {
     TouchableHighlight
 } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import {Container, Content} from "native-base";
 
 const IDQuestion = ({
                      onHasID,
                      onNoID
 
                  })=>(
-    <Container style={styles.centerMid}>
+    <View style={styles.centerMid}>
 
-        <Content padder >
+        <View padder >
 
             <Text style={styles.text}>Have you been provided an ID?</Text>
 
@@ -38,8 +37,8 @@ const IDQuestion = ({
                     <Text style={styles.spotifyLoginButtonText}>No</Text>
                 </TouchableHighlight>
             </View>
-        </Content>
-    </Container>
+        </View>
+    </View>
 
 );
 

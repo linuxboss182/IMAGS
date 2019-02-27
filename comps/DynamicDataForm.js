@@ -13,7 +13,6 @@ import {
     TouchableHighlight, TextInput
 } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import {Container, Content} from "native-base";
 
 const DynamicDataForm = ({
                             sbp,
@@ -26,8 +25,8 @@ const DynamicDataForm = ({
                              spotifyLoginButtonWasPressed
 
                         })=>(
-    <Container style={styles.mid}>
-    <Content padder >
+    <View style={styles.mid}>
+    <View padder >
 
         <Text style={styles.text}>Systolic blood pressure</Text>
         <TextInput  style={styles.input} defaultValue={sbp} onChangeText={handleSBPChange}/>
@@ -46,8 +45,8 @@ const DynamicDataForm = ({
         <TouchableHighlight onPress={prevPage} style={styles.nextPageButton}>
             <Text style={styles.spotifyLoginButtonText}>Back</Text>
         </TouchableHighlight>
-    </Content>
-    </Container>
+    </View>
+    </View>
 );
 
 const styles = StyleSheet.create({

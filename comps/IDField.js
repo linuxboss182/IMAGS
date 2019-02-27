@@ -14,7 +14,6 @@ import {
     TouchableHighlight
 } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import {Container, Content} from "native-base";
 
 const IDField = ({
                      participantID,
@@ -24,9 +23,9 @@ const IDField = ({
                     validID
 
                  })=>(
-    <Container style={styles.centerMid}>
+    <View style={styles.centerMid}>
 
-    <Content padder >
+    <View padder >
 
        <Text style={styles.text}>Please Enter Your ID</Text>
        <TextInput  style={styles.input} defaultValue={participantID} onChangeText={handleIDChange}/>
@@ -42,8 +41,8 @@ const IDField = ({
            </TouchableHighlight>
        </View>
 
-    </Content>
-    </Container>
+    </View>
+    </View>
 
 );
 

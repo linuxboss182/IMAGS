@@ -12,7 +12,6 @@ import {
     TouchableHighlight, TextInput
 } from 'react-native';
 import { FormLabel, FormInput, FormValidationMessage } from 'react-native-elements'
-import {Container, Content} from "native-base";
 
 const StaticDataForm = ({
                             name,
@@ -35,9 +34,9 @@ handlePainDurChange,
 
 
 })=>(
-    <Container style={styles.mid}>
+    <View style={styles.mid}>
 
-    <Content padder >
+    <View padder >
 
 
 
@@ -63,8 +62,8 @@ handlePainDurChange,
             <Text style={styles.spotifyLoginButtonText}>Continue</Text>
         </TouchableHighlight>
 
-    </Content>
-    </Container>
+    </View>
+    </View>
 );
 
 const styles = StyleSheet.create({
